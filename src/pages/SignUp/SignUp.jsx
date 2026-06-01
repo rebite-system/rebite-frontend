@@ -261,25 +261,6 @@ function SignUp() {
                     </p>
                 </div>
             </div>
-
-            {showVerifyModal && (
-                <div className="auth-modal-overlay">
-                    <div className="auth-modal verify-modal">
-                        <div className="verify-icon">✉️</div>
-
-                        <h2>Verification Email Sent</h2>
-
-                        <p>
-                            We sent a verification email to <strong>{form.email}</strong>.
-                            Please verify your email, then sign in with your new credentials.
-                        </p>
-
-                        <button className="signup-btn" onClick={() => navigate("/signin")}>
-                            Go to Sign In
-                        </button>
-                    </div>
-                </div>
-            )}
         </div>
     );
 }
