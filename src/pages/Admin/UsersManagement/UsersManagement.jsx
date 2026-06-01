@@ -294,6 +294,7 @@ function UsersManagement() {
                 >
                   <option value="charity">Charity</option>
                   <option value="restaurant">Restaurant</option>
+                  <option value="donor">donor</option>
                 </select>
               </div>
 
