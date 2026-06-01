@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import "./Claimsnew.css";
+import "./claimsnew.css";
 import api from "../../../api/axios";
 
 const filters = [
