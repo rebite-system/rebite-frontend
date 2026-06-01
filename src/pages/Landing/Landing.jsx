@@ -43,10 +43,6 @@ function HeroSection() {
           <button className="btn-primary" onClick={() => navigate("/signup")}>
             Get Started →
           </button>
-
-          <button className="btn-secondary" onClick={() => navigate("/signin")}>
-            Sign In
-          </button>
         </div>
 
         <p className="hero-note">Join as Restaurant • Charity • Donor</p>
@@ -58,10 +54,6 @@ function HeroSection() {
           <h3>Fresh meals saved</h3>
           <p>Food reaches people instead of going to waste.</p>
         </div>
-
-        <div className="floating-card floating-card-top">🍽️ 12k+ meals</div>
-
-        <div className="floating-card floating-card-bottom">🌱 Less waste</div>
       </div>
     </section>
   );
