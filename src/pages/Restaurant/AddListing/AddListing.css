@@ -1,0 +1,402 @@
+.add-listing {
+  min-height: 100vh;
+  background: #f7f5ef;
+  padding: 34px 42px;
+}
+
+/* Header */
+
+.al-header {
+  max-width: 1100px;
+  margin: 0 auto 28px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 24px;
+}
+
+.al-kicker {
+  color: #6b7280;
+  font-size: 14px;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.al-title {
+  font-size: 42px;
+  font-weight: 900;
+  color: #1f3b10;
+  margin-bottom: 8px;
+}
+
+.al-sub {
+  font-size: 15px;
+  color: #6b7280;
+  line-height: 1.7;
+}
+
+.al-back-btn {
+  border: none;
+  background: transparent;
+  color: #1f3b10;
+  padding: 10px 14px;
+  border-radius: 14px;
+  font-size: 15px;
+  font-weight: 900;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.al-back-btn:hover {
+  background: #eef5e8;
+}
+
+/* Form */
+
+.al-form-wrapper {
+  background: #ffffff;
+  border-radius: 32px;
+  border: 1px solid #ece7dc;
+  padding: 34px;
+  max-width: 1100px;
+  margin: 0 auto;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+}
+
+.al-form {
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+}
+
+.al-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+}
+
+.al-col {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.al-section-title {
+  font-size: 14px;
+  font-weight: 900;
+  color: #1f3b10;
+  padding-bottom: 10px;
+  border-bottom: 1.5px solid #f0ebe0;
+  margin-bottom: 2px;
+}
+
+/* Fields */
+
+.al-field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.al-label {
+  font-size: 14px;
+  font-weight: 900;
+  color: #1f3b10;
+}
+
+.al-optional {
+  font-size: 12px;
+  color: #9ca3af;
+  font-weight: 600;
+}
+
+.al-input {
+  width: 100%;
+  height: 56px;
+  padding: 0 16px;
+  border-radius: 18px;
+  border: 1.5px solid #d8cfbf;
+  background: #ffffff;
+  font-size: 15px;
+  color: #1f3b10;
+  outline: none;
+  box-sizing: border-box;
+  font-family: inherit;
+  transition: 0.2s;
+}
+
+.al-input:focus {
+  border-color: #1f3b10;
+  box-shadow: 0 0 0 4px rgba(31, 59, 16, 0.08);
+}
+
+.al-input::placeholder {
+  color: #a3a3a3;
+}
+
+.al-textarea {
+  padding-top: 16px;
+  min-height: 132px;
+  resize: vertical;
+}
+
+.al-count {
+  text-align: right;
+  color: #9ca3af;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.al-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.al-error {
+  font-size: 12px;
+  color: #dc2626;
+  font-weight: 800;
+  margin-top: 2px;
+}
+
+.al-error-box {
+  background: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+  padding: 14px 16px;
+  border-radius: 16px;
+  font-weight: 800;
+}
+
+/* Info */
+
+.al-info-card {
+  background: #eef5e8;
+  border: 1px solid #dce8d0;
+  color: #1f3b10;
+  border-radius: 20px;
+  padding: 18px;
+  display: flex;
+  gap: 12px;
+  line-height: 1.7;
+}
+
+.al-info-card span {
+  font-size: 20px;
+}
+
+.al-info-card p {
+  font-size: 14px;
+  color: #5f6f56;
+}
+
+/* Upload */
+
+.al-upload-box {
+  min-height: 230px;
+  border: 1.8px dashed #d8cfbf;
+  border-radius: 24px;
+  background: #f8f6ef;
+  cursor: pointer;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  transition: 0.2s;
+}
+
+.al-upload-box:hover {
+  background: #eef5e8;
+  border-color: #1f3b10;
+}
+
+.al-upload-box input {
+  display: none;
+}
+
+.al-upload-box img {
+  width: 100%;
+  height: 230px;
+  object-fit: cover;
+}
+
+.al-upload-box span {
+  width: 52px;
+  height: 52px;
+  background: #1f3b10;
+  color: white;
+  border-radius: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  font-weight: 900;
+  margin-bottom: 14px;
+}
+
+.al-upload-box p {
+  color: #1f3b10;
+  font-size: 16px;
+  font-weight: 900;
+  margin-bottom: 6px;
+}
+
+.al-upload-box small {
+  color: #6b7280;
+  font-weight: 600;
+}
+
+/* Actions */
+
+.al-divider {
+  height: 1px;
+  background: #f0ebe0;
+}
+
+.al-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.al-btn-primary,
+.al-btn-secondary {
+  border: none;
+  padding: 15px 28px;
+  border-radius: 18px;
+  font-size: 15px;
+  font-weight: 900;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.al-btn-primary {
+  background: #1f3b10;
+  color: #ffffff;
+  box-shadow: 0 12px 26px rgba(31, 59, 16, 0.16);
+}
+
+.al-btn-primary:hover {
+  transform: translateY(-2px);
+}
+
+.al-btn-primary:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.al-btn-secondary {
+  background: #f3f0e8;
+  color: #1f3b10;
+}
+
+.al-btn-secondary:hover {
+  background: #e7e1d3;
+}
+
+/* Modal */
+
+.al-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(17, 24, 39, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.al-success-modal {
+  width: 100%;
+  max-width: 480px;
+  background: white;
+  border-radius: 30px;
+  padding: 36px;
+  text-align: center;
+  position: relative;
+  animation: popup 0.2s ease;
+}
+
+@keyframes popup {
+  from {
+    transform: scale(0.96);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.al-modal-close {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  border: none;
+  background: #f3f0e8;
+  color: #1f3b10;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-weight: 900;
+}
+
+.success-icon {
+  font-size: 56px;
+  margin-bottom: 16px;
+}
+
+.al-success-modal h2 {
+  color: #1f3b10;
+  font-size: 30px;
+  margin-bottom: 12px;
+}
+
+.al-success-modal p {
+  color: #6b7280;
+  line-height: 1.7;
+  margin-bottom: 24px;
+}
+
+.al-modal-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+/* Responsive */
+
+@media (max-width: 900px) {
+  .add-listing {
+    padding: 24px 18px;
+  }
+
+  .al-header {
+    flex-direction: column;
+  }
+
+  .al-title {
+    font-size: 34px;
+  }
+
+  .al-grid,
+  .al-row,
+  .al-modal-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .al-actions {
+    flex-direction: column;
+  }
+
+  .al-btn-primary,
+  .al-btn-secondary {
+    width: 100%;
+  }
+}

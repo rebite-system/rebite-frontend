@@ -1,0 +1,371 @@
+.signup {
+  min-height: 100vh;
+  background: #f7f5ef;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 28px;
+}
+
+.auth-shell {
+  width: 100%;
+  max-width: 1120px;
+  background: white;
+  border-radius: 34px;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  border: 1px solid #ece7dc;
+  box-shadow: 0 20px 60px rgba(31, 59, 16, 0.08);
+}
+
+.auth-brand-panel {
+  background: linear-gradient(145deg, #2d5016, #1f3b10);
+  color: white;
+  padding: 42px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.auth-back {
+  width: fit-content;
+  border: none;
+  background: rgba(255, 255, 255, 0.12);
+  color: white;
+  padding: 10px 14px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 700;
+  transition: 0.2s;
+}
+
+.auth-back:hover {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.auth-logo {
+  font-size: 24px;
+  font-weight: 900;
+  margin-bottom: 28px;
+}
+
+.auth-brand-panel h1 {
+  font-size: 58px;
+  line-height: 1;
+  margin-bottom: 24px;
+  max-width: 430px;
+}
+
+.auth-brand-panel p {
+  color: rgba(255, 255, 255, 0.82);
+  line-height: 1.8;
+  font-size: 16px;
+  max-width: 460px;
+}
+
+.auth-benefits {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 34px;
+}
+
+.auth-benefits div {
+  width: fit-content;
+  background: rgba(255, 255, 255, 0.12);
+  padding: 12px 16px;
+  border-radius: 14px;
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.signup-container {
+  padding: 38px 48px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: #f7f5ef;
+}
+
+.title {
+  color: #1f3b10;
+  font-size: 42px;
+  font-weight: 900;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.signup-sub {
+  color: #6b7280;
+  font-size: 15px;
+  margin-bottom: 24px;
+  text-align: center;
+  line-height: 1.6;
+}
+
+form label {
+  display: block;
+  margin-top: 15px;
+  font-size: 14px;
+  font-weight: 800;
+  color: #1f3b10;
+}
+
+form input {
+  width: 100%;
+  height: 54px;
+  margin-top: 8px;
+  border-radius: 16px;
+  border: 1.5px solid #d8cfbf;
+  background: white;
+  font-size: 15px;
+  color: #1f3b10;
+  outline: none;
+  box-sizing: border-box;
+  padding: 0 16px;
+  transition: 0.2s;
+}
+
+form input:focus {
+  border-color: #2d5016;
+  box-shadow: 0 0 0 4px rgba(45, 80, 22, 0.08);
+}
+
+form input::placeholder {
+  color: #a1a1aa;
+}
+
+.input-wrapper {
+  position: relative;
+  margin-top: 8px;
+}
+
+.input-wrapper input {
+  margin-top: 0;
+  padding-right: 54px;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+
+  border: none;
+  background: transparent;
+
+  color: #5f6f56;
+
+  font-size: 13px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  padding: 0;
+}
+
+.roles {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.role {
+  min-height: 56px;
+  border: 1.5px solid #d8cfbf;
+  border-radius: 16px;
+  background: white;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 800;
+  color: #5a6b4a;
+  transition: 0.2s;
+}
+
+.role:hover {
+  border-color: #2d5016;
+  transform: translateY(-1px);
+}
+
+.role.active {
+  border-color: #2d5016;
+  background: #dceccf;
+  color: #1f3b10;
+}
+
+.signup-btn {
+  width: 100%;
+  height: 58px;
+  margin-top: 28px;
+  background: #1f3b10;
+  color: white;
+  border: none;
+  border-radius: 18px;
+  font-size: 17px;
+  font-weight: 900;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.signup-btn:hover {
+  transform: translateY(-2px);
+  opacity: 0.95;
+}
+
+.signup-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.strength {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.strength-bars {
+  display: flex;
+  gap: 5px;
+}
+
+.strength-bar {
+  width: 42px;
+  height: 5px;
+  border-radius: 999px;
+  background: #d8cfbf;
+}
+
+.strength--weak .strength-bar:nth-child(1) {
+  background: #ef4444;
+}
+
+.strength--medium .strength-bar:nth-child(1),
+.strength--medium .strength-bar:nth-child(2) {
+  background: #f59e0b;
+}
+
+.strength--strong .strength-bar:nth-child(1),
+.strength--strong .strength-bar:nth-child(2),
+.strength--strong .strength-bar:nth-child(3) {
+  background: #2d5016;
+}
+
+.strength-text {
+  font-size: 12px;
+  font-weight: 800;
+  color: #5a6b4a;
+}
+
+.error {
+  color: #dc2626;
+  font-size: 13px;
+  margin-top: 7px;
+  font-weight: 700;
+}
+
+.server-error {
+  background: #fdeaea;
+  color: #c0392b;
+  border: 1px solid #f3c5bf;
+  padding: 12px 14px;
+  border-radius: 14px;
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 14px;
+}
+
+.footer-text {
+  margin-top: 24px;
+  text-align: center;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.footer-text span {
+  color: #1f3b10;
+  cursor: pointer;
+  font-weight: 900;
+}
+
+.footer-text span:hover {
+  text-decoration: underline;
+}
+
+.auth-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  padding: 20px;
+}
+
+.auth-modal {
+  width: 100%;
+  max-width: 460px;
+  background: white;
+  border-radius: 28px;
+  padding: 34px;
+  text-align: center;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.12);
+}
+
+.verify-icon {
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  background: #eef7e7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 34px;
+  margin: 0 auto 18px;
+}
+
+.auth-modal h2 {
+  color: #1f3b10;
+  font-size: 30px;
+  margin-bottom: 12px;
+}
+
+.auth-modal p {
+  color: #6b7280;
+  line-height: 1.8;
+  font-size: 15px;
+}
+
+.auth-modal strong {
+  color: #1f3b10;
+}
+
+@media (max-width: 950px) {
+  .signup {
+    padding: 18px;
+  }
+
+  .auth-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .auth-brand-panel {
+    display: none;
+  }
+
+  .signup-container {
+    padding: 40px 24px;
+  }
+
+  .title {
+    font-size: 34px;
+  }
+
+  .roles {
+    grid-template-columns: 1fr;
+  }
+}

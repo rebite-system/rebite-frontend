@@ -1,0 +1,33 @@
+.info {
+    padding: 40px 20px;
+    text-align: center;
+    background-color: white;
+}
+
+.info h2 {
+    color: #2d5016;
+    margin-bottom: 25px;
+}
+
+.info-cards {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.card {
+    background-color: #f5f0e8;
+    padding: 20px;
+    border-radius: 15px;
+    width: 200px;
+}
+
+.card h3 {
+    color: #2d5016;
+    margin-bottom: 10px;
+}
+
+.card p {
+    font-size: 13px;
+    color: #555;
+}

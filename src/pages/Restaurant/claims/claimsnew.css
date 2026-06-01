@@ -1,0 +1,262 @@
+.claims-page {
+  min-height: 100vh;
+  background: #f7f5ef;
+  padding: 34px 42px;
+}
+
+.claims-header,
+.claims-filter-bar,
+.claims-list,
+.claims-message,
+.claims-empty {
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.claims-header {
+  margin-bottom: 24px;
+}
+
+.claims-header h1 {
+  font-size: 42px;
+  color: #1f3b10;
+  font-weight: 900;
+  margin-bottom: 8px;
+}
+
+.claims-header p {
+  color: #6b7280;
+  font-size: 15px;
+}
+
+.claims-message {
+  margin-bottom: 18px;
+  background: #eef5e8;
+  color: #1f3b10;
+  padding: 14px 16px;
+  border-radius: 16px;
+  font-weight: 800;
+}
+
+.claims-filter-bar {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  border-bottom: 1px solid #e4dccd;
+  padding-bottom: 14px;
+  margin-bottom: 22px;
+}
+
+.claims-filter {
+  border: 1px solid #d8cfbf;
+  background: #ffffff;
+  color: #1f3b10;
+  padding: 10px 16px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.claims-filter.active {
+  background: #1f3b10;
+  color: #ffffff;
+  border-color: #1f3b10;
+}
+
+.claims-filter strong {
+  min-width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: #f3f0e8;
+  color: #1f3b10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 7px;
+  font-size: 12px;
+}
+
+.claims-filter.active strong {
+  background: rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+}
+
+.claims-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.claim-card {
+  background: #ffffff;
+  border: 1px solid #ece7dc;
+  border-radius: 24px;
+  padding: 22px 24px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  align-items: center;
+}
+
+.claim-card-pending {
+  border-left: 7px solid #1f3b10;
+}
+
+.claim-card-accepted {
+  border-left: 7px solid #2563eb;
+}
+
+.claim-card-collected {
+  border-left: 7px solid #2d5016;
+  opacity: 0.92;
+}
+
+.claim-card-rejected {
+  border-left: 7px solid #991b1b;
+  opacity: 0.86;
+}
+
+.claim-main {
+  flex: 1;
+}
+
+.claim-main h3 {
+  color: #1f3b10;
+  font-size: 22px;
+  font-weight: 900;
+  margin-bottom: 14px;
+}
+
+.claim-food {
+  background: #f8f6ef;
+  border-radius: 16px;
+  padding: 14px 16px;
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 12px;
+}
+
+.claim-food strong {
+  color: #1f3b10;
+  font-size: 15px;
+}
+
+.claim-food span {
+  color: #6b7280;
+  font-weight: 800;
+}
+
+.claim-details {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+  color: #5f6f56;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.claim-side {
+  min-width: 190px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.claim-side button {
+  border: none;
+  padding: 14px 18px;
+  border-radius: 16px;
+  cursor: pointer;
+  font-weight: 900;
+  transition: 0.2s;
+}
+
+.claim-side button:hover {
+  transform: translateY(-2px);
+}
+
+.accept-btn {
+  background: #1f3b10;
+  color: white;
+}
+
+.reject-btn {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.collect-btn {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.claim-note {
+  padding: 14px 18px;
+  border-radius: 16px;
+  font-weight: 900;
+  text-align: center;
+}
+
+.rejected-note {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.collected-note {
+  background: #e8f6df;
+  color: #1f3b10;
+}
+
+.claims-empty {
+  background: white;
+  border-radius: 28px;
+  padding: 60px 24px;
+  text-align: center;
+  border: 1px solid #ece7dc;
+}
+
+.claims-empty div {
+  font-size: 52px;
+  margin-bottom: 16px;
+}
+
+.claims-empty h2 {
+  color: #1f3b10;
+  font-size: 28px;
+  font-weight: 900;
+}
+
+.claims-empty p {
+  color: #6b7280;
+  margin-top: 10px;
+}
+
+@media (max-width: 900px) {
+  .claims-page {
+    padding: 24px 18px;
+  }
+
+  .claims-header h1 {
+    font-size: 34px;
+  }
+
+  .claim-card {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .claim-food {
+    flex-direction: column;
+  }
+
+  .claim-side {
+    min-width: 100%;
+  }
+}

@@ -1,0 +1,410 @@
+.users-management {
+  background-color: #f5f0e8;
+  min-height: 100vh;
+}
+
+/* ── Header ── */
+.um-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.um-title {
+  font-size: 28px;
+  font-weight: 900;
+  color: #1f3b10;
+  margin-bottom: 4px;
+}
+
+.um-sub {
+  font-size: 13px;
+  color: #9ca3af;
+}
+
+.um-add-btn {
+  padding: 12px 24px;
+  background-color: #1f3b10;
+  color: #ffffff;
+  border: none;
+  border-radius: 32px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.um-add-btn:hover {
+  opacity: 0.88;
+}
+
+/* ── Filters ── */
+.um-filters {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.um-search {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: #ffffff;
+  border: 1.5px solid #d8cfbf;
+  border-radius: 12px;
+  padding: 10px 16px;
+  flex: 1;
+  min-width: 200px;
+  transition: border-color 0.2s;
+}
+
+.um-search:focus-within {
+  border-color: #1f3b10;
+}
+
+.um-search input {
+  border: none;
+  outline: none;
+  font-size: 14px;
+  color: #1a1a1a;
+  background: transparent;
+  width: 100%;
+  font-family: inherit;
+}
+
+.um-select {
+  padding: 10px 16px;
+  border-radius: 12px;
+  border: 1.5px solid #d8cfbf;
+  background-color: #ffffff;
+  font-size: 14px;
+  color: #1a1a1a;
+  outline: none;
+  cursor: pointer;
+  font-family: inherit;
+  transition: border-color 0.2s;
+}
+
+.um-select:focus {
+  border-color: #1f3b10;
+}
+
+/* ── Table ── */
+.um-table-wrapper {
+  background-color: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #d8cfbf;
+  overflow: hidden;
+}
+
+.um-table-head {
+  display: grid;
+  grid-template-columns: 1.5fr 2fr 1fr 1fr 1.5fr 1.2fr;
+  padding: 14px 24px;
+  background-color: #eee8da;
+  font-size: 12px;
+  font-weight: 700;
+  color: #5a6b4a;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.um-table-row {
+  display: grid;
+  grid-template-columns: 1.5fr 2fr 1fr 1fr 1.5fr 1.2fr;
+  padding: 14px 24px;
+  align-items: center;
+  border-top: 1px solid #f0ebe0;
+  transition: background-color 0.15s;
+}
+
+.um-table-row:hover {
+  background-color: #faf8f4;
+}
+
+.um-user-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.um-user-email {
+  font-size: 13px;
+  color: #5a6b4a;
+}
+
+.um-user-role {
+  font-size: 13px;
+  color: #5a6b4a;
+}
+
+.um-user-joined {
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+/* ── Status ── */
+.um-status {
+  display: inline-flex;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: capitalize;
+}
+
+.um-status.active {
+  background-color: #eaf9ea;
+  color: #27ae60;
+}
+
+.um-status.inactive {
+  background-color: #fdedec;
+  color: #e74c3c;
+}
+
+/* ── Actions ── */
+.um-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.um-edit-btn {
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid #d8cfbf;
+  background-color: #ffffff;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+
+.um-edit-btn:hover {
+  background-color: #eee8da;
+}
+
+.um-toggle-btn {
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.um-toggle-btn.deactivate {
+  background-color: #fef9e7;
+  color: #f39c12;
+}
+
+.um-toggle-btn.activate {
+  background-color: #eaf9ea;
+  color: #27ae60;
+}
+
+.um-delete-btn {
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid #f1948a;
+  background-color: #ffffff;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+
+.um-delete-btn:hover {
+  background-color: #fdedec;
+}
+
+/* ── Footer ── */
+.um-table-footer {
+  padding: 14px 24px;
+  font-size: 13px;
+  color: #9ca3af;
+  border-top: 1px solid #f0ebe0;
+}
+
+/* ── Empty ── */
+.um-empty {
+  padding: 40px;
+  text-align: center;
+  color: #9ca3af;
+  font-size: 14px;
+}
+
+/* ── Modal ── */
+.um-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  padding: 24px;
+}
+
+.um-modal {
+  background-color: #f5f0e8;
+  border-radius: 20px;
+  padding: 32px 28px;
+  width: 100%;
+  max-width: 580px;
+  max-height: 85vh;
+  overflow-y: auto;
+}
+
+.um-modal-title {
+  font-size: 22px;
+  font-weight: 900;
+  color: #1f3b10;
+  margin-bottom: 4px;
+}
+
+.um-modal-sub {
+  font-size: 12px;
+  color: #9ca3af;
+  margin-bottom: 24px;
+}
+
+/* ── Form ── */
+.um-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.um-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.um-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1f3b10;
+}
+
+.um-input {
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1.5px solid #d8cfbf;
+  background-color: #ffffff;
+  font-size: 14px;
+  color: #1f3b10;
+  outline: none;
+  transition: border-color 0.2s;
+  font-family: inherit;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.um-input:focus {
+  border-color: #1f3b10;
+}
+
+/* ── Modal Actions ── */
+.um-modal-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.um-btn-primary {
+  flex: 1;
+  padding: 13px;
+  background-color: #1f3b10;
+  color: #ffffff;
+  border: none;
+  border-radius: 32px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.um-btn-primary:hover {
+  opacity: 0.88;
+}
+
+.um-btn-secondary {
+  flex: 1;
+  padding: 13px;
+  background-color: #eee8da;
+  color: #1f3b10;
+  border: none;
+  border-radius: 32px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.um-btn-secondary:hover {
+  opacity: 0.88;
+}
+
+.um-btn-danger {
+  flex: 1;
+  padding: 13px;
+  background-color: #e74c3c;
+  color: #ffffff;
+  border: none;
+  border-radius: 32px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.um-btn-danger:hover {
+  opacity: 0.88;
+}
+
+/* ── Confirm Modal ── */
+.um-confirm {
+  max-width: 400px;
+  text-align: center;
+}
+
+.um-confirm-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.um-confirm-sub {
+  font-size: 13px;
+  color: #5a6b4a;
+  line-height: 1.7;
+  margin-bottom: 24px;
+}
+.um-status.pending {
+  background-color: #fef9e7;
+  color: #9a7d0a;
+}
+
+.um-clear-search {
+  border: none;
+  background: transparent;
+  color: #9ca3af;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.um-check-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #ffffff;
+  border: 1px solid #d8cfbf;
+  border-radius: 12px;
+  padding: 10px 12px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #1f3b10;
+  margin-bottom: 8px;
+}

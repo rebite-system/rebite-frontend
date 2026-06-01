@@ -1,0 +1,403 @@
+.claimed-listings {
+  background-color: #f5f0e8;
+  min-height: 100vh;
+}
+
+/* ── Header ── */
+.cl-header {
+  margin-bottom: 24px;
+}
+
+.cl-title {
+  font-size: 28px;
+  font-weight: 900;
+  color: #1f3b10;
+  margin-bottom: 4px;
+}
+
+.cl-sub {
+  font-size: 14px;
+  color: #5a6b4a;
+}
+
+/* ── Stats ── */
+.cl-stats {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.cl-stat {
+  flex: 1;
+  background-color: #ffffff;
+  border-radius: 14px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  border: 1px solid #d8cfbf;
+  max-width: 160px;
+}
+
+.cl-stat-num {
+  font-size: 28px;
+  font-weight: 900;
+  color: #1f3b10;
+}
+
+.cl-stat-lbl {
+  font-size: 12px;
+  color: #5a6b4a;
+  font-weight: 500;
+}
+
+/* ── Tabs ── */
+.cl-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #d8cfbf;
+  padding-bottom: 12px;
+}
+
+.cl-tab {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 18px;
+  border-radius: 20px;
+  background-color: #ffffff;
+  border: 1px solid #d8cfbf;
+  font-size: 13px;
+  font-weight: 500;
+  color: #5a6b4a;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.cl-tab:hover {
+  border-color: #1f3b10;
+  color: #1f3b10;
+}
+
+.cl-tab.active {
+  background-color: #1f3b10;
+  border-color: #1f3b10;
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.cl-tab-cnt {
+  min-width: 18px;
+  height: 18px;
+  border-radius: 9px;
+  background-color: rgba(255, 255, 255, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.cl-tab:not(.active) .cl-tab-cnt {
+  background-color: #eee8da;
+  color: #5a6b4a;
+}
+
+/* ── Grid ── */
+.cl-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 16px;
+}
+
+/* ── Card ── */
+.cl-card {
+  background-color: #ffffff;
+  border-radius: 18px;
+  padding: 18px;
+  border: 1px solid #d8cfbf;
+  transition: box-shadow 0.2s;
+}
+
+.cl-card:hover {
+  box-shadow: 0 4px 16px rgba(31, 59, 16, 0.1);
+}
+
+/* ── Card Header ── */
+.cl-card-hdr {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+  gap: 8px;
+}
+
+.cl-rest-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+}
+
+.cl-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background-color: #d8f3dc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: #1f3b10;
+  flex-shrink: 0;
+}
+
+.cl-rest-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1a1a1a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cl-food-type {
+  font-size: 11px;
+  color: #6b7280;
+}
+
+/* ── Badge ── */
+.cl-badge {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  border: 1px solid;
+  flex-shrink: 0;
+}
+
+.cl-badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.cl-badge-txt {
+  font-size: 11px;
+  font-weight: 700;
+}
+
+/* ── Divider ── */
+.cl-divider {
+  height: 1px;
+  background-color: #f0ebe0;
+  margin-bottom: 12px;
+}
+
+/* ── Items ── */
+.cl-items {
+  font-size: 13px;
+  color: #1a1a1a;
+  font-weight: 500;
+  line-height: 1.5;
+  margin-bottom: 10px;
+}
+
+/* ── Meta ── */
+.cl-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: #6b7280;
+  margin-bottom: 8px;
+}
+
+.cl-meta-sep {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background-color: #d1d5db;
+}
+
+/* ── Claimed At ── */
+.cl-claimed-at {
+  font-size: 12px;
+  color: #9ca3af;
+  margin-bottom: 10px;
+}
+
+/* ── Tags ── */
+.cl-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.cl-tag {
+  padding: 3px 10px;
+  border-radius: 6px;
+  background-color: #d8f3dc;
+  font-size: 11px;
+  font-weight: 600;
+  color: #1f3b10;
+}
+
+/* ── Confirm Button ── */
+.cl-confirm-btn {
+  width: 100%;
+  padding: 13px;
+  border-radius: 12px;
+  background-color: #1f3b10;
+  border: none;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  font-family: inherit;
+}
+
+.cl-confirm-btn:hover {
+  opacity: 0.88;
+}
+
+/* ── Collected Badge ── */
+.cl-collected-badge {
+  width: 100%;
+  padding: 13px;
+  border-radius: 12px;
+  background-color: #d8f3dc;
+  color: #1f3b10;
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+}
+
+/* ── Empty State ── */
+.cl-empty {
+  text-align: center;
+  padding: 60px 24px;
+}
+
+.cl-empty-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.cl-empty-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1f3b10;
+  margin-bottom: 8px;
+}
+
+.cl-empty-sub {
+  font-size: 13px;
+  color: #5a6b4a;
+  line-height: 1.6;
+}
+
+/* ── Modal ── */
+.cl-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  padding: 24px;
+}
+
+.cl-modal {
+  background-color: #f5f0e8;
+  border-radius: 20px;
+  padding: 32px 28px;
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+}
+
+.cl-modal-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.cl-modal-title {
+  font-size: 22px;
+  font-weight: 900;
+  color: #1f3b10;
+  margin-bottom: 12px;
+}
+
+.cl-modal-sub {
+  font-size: 13px;
+  color: #5a6b4a;
+  line-height: 1.7;
+  margin-bottom: 24px;
+}
+
+.cl-modal-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.cl-btn-primary {
+  flex: 1;
+  padding: 13px;
+  background-color: #1f3b10;
+  color: #ffffff;
+  border: none;
+  border-radius: 32px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.cl-btn-primary:hover {
+  opacity: 0.88;
+}
+
+.cl-btn-secondary {
+  flex: 1;
+  padding: 13px;
+  background-color: #eee8da;
+  color: #1f3b10;
+  border: none;
+  border-radius: 32px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.cl-btn-secondary:hover {
+  opacity: 0.88;
+}
+.cl-progress {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid #ece7dc;
+}
+
+.cl-progress h4 {
+  color: #1f3b10;
+  font-size: 14px;
+  font-weight: 800;
+  margin-bottom: 10px;
+}
+
+.cl-progress p {
+  margin-bottom: 6px;
+  font-size: 13px;
+  color: #5a6b4a;
+}

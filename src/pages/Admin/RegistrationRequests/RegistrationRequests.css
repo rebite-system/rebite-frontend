@@ -1,0 +1,568 @@
+.registration-requests {
+  background-color: #f5f0e8;
+  min-height: 100vh;
+}
+
+/* ── Header ── */
+.rr-header {
+  margin-bottom: 24px;
+}
+
+.rr-title {
+  font-size: 28px;
+  font-weight: 900;
+  color: #1f3b10;
+  margin-bottom: 4px;
+}
+
+.rr-sub {
+  font-size: 13px;
+  color: #9ca3af;
+}
+
+/* ── Tabs ── */
+.rr-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #d8cfbf;
+  padding-bottom: 12px;
+}
+
+.rr-tab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 20px;
+  border-radius: 20px;
+  background-color: #ffffff;
+  border: 1px solid #d8cfbf;
+  font-size: 13px;
+  font-weight: 500;
+  color: #5a6b4a;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.rr-tab:hover {
+  border-color: #1f3b10;
+  color: #1f3b10;
+}
+
+.rr-tab.active {
+  background-color: #1f3b10;
+  border-color: #1f3b10;
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.rr-tab-cnt {
+  min-width: 20px;
+  height: 20px;
+  border-radius: 10px;
+  background-color: #eee8da;
+  color: #5a6b4a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 5px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.rr-tab-cnt.active {
+  background-color: rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+}
+
+/* ── Table ── */
+.rr-table-wrapper {
+  background-color: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #d8cfbf;
+  overflow: hidden;
+}
+
+.rr-table-head {
+  display: grid;
+  grid-template-columns: 1.5fr 1.2fr 2fr 1.5fr 1.5fr;
+  padding: 14px 24px;
+  background-color: #eee8da;
+  font-size: 12px;
+  font-weight: 700;
+  color: #5a6b4a;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.rr-table-row {
+  display: grid;
+  grid-template-columns: 1.5fr 1.2fr 2fr 1.5fr 1.5fr;
+  padding: 14px 24px;
+  align-items: center;
+  border-top: 1px solid #f0ebe0;
+  transition: background-color 0.15s;
+}
+
+.rr-table-row:hover {
+  background-color: #faf8f4;
+}
+
+.rr-org-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.rr-org-type {
+  font-size: 13px;
+  color: #5a6b4a;
+}
+
+.rr-org-email {
+  font-size: 13px;
+  color: #5a6b4a;
+}
+
+.rr-org-date {
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+/* ── Actions ── */
+.rr-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.rr-view-btn {
+  padding: 5px 10px;
+  border-radius: 8px;
+  border: 1px solid #d8cfbf;
+  background-color: #ffffff;
+  font-size: 12px;
+  font-weight: 600;
+  color: #5a6b4a;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.rr-view-btn:hover {
+  background-color: #eee8da;
+}
+
+.rr-approve-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  border: 1px solid #a9dfbf;
+  background-color: #eaf9ea;
+  color: #27ae60;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.rr-approve-btn:hover {
+  background-color: #27ae60;
+  color: #ffffff;
+}
+
+.rr-reject-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  border: 1px solid #f1948a;
+  background-color: #fdedec;
+  color: #e74c3c;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.rr-reject-btn:hover {
+  background-color: #e74c3c;
+  color: #ffffff;
+}
+
+/* ── Status ── */
+.rr-status {
+  display: inline-flex;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: capitalize;
+}
+
+.rr-status.pending {
+  background-color: #fef9e7;
+  color: #f39c12;
+}
+
+.rr-status.approved {
+  background-color: #eaf9ea;
+  color: #27ae60;
+}
+
+.rr-status.rejected {
+  background-color: #fdedec;
+  color: #e74c3c;
+}
+
+/* ── Footer ── */
+.rr-table-footer {
+  padding: 14px 24px;
+  font-size: 13px;
+  color: #9ca3af;
+  border-top: 1px solid #f0ebe0;
+}
+
+/* ── Empty ── */
+.rr-empty {
+  padding: 40px;
+  text-align: center;
+  color: #9ca3af;
+  font-size: 14px;
+}
+
+/* ── Modal ── */
+.rr-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  padding: 24px;
+}
+
+.rr-modal {
+  background-color: #f5f0e8;
+  border-radius: 20px;
+  padding: 32px 28px;
+  width: 100%;
+  max-width: 700px;
+  max-height: 85vh;
+  overflow-y: auto;
+}
+
+.rr-modal-header {
+  margin-bottom: 24px;
+}
+
+.rr-modal-title {
+  font-size: 22px;
+  font-weight: 900;
+  color: #1f3b10;
+  margin-bottom: 4px;
+}
+
+.rr-modal-sub {
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+/* ── Modal Body ── */
+.rr-modal-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.rr-detail-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.rr-detail-icon {
+  font-size: 18px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.rr-detail-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 3px;
+}
+
+.rr-detail-val {
+  font-size: 14px;
+  color: #1a1a1a;
+  font-weight: 500;
+}
+
+/* ── About Card ── */
+.rr-about-card {
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 20px;
+  border: 1px solid #d8cfbf;
+  height: fit-content;
+}
+
+.rr-about-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1f3b10;
+  margin-bottom: 10px;
+}
+
+.rr-about-txt {
+  font-size: 13px;
+  color: #5a6b4a;
+  line-height: 1.7;
+}
+
+/* ── Modal Actions ── */
+.rr-modal-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.rr-modal-approve-btn {
+  padding: 13px 28px;
+  background-color: #1f3b10;
+  color: #ffffff;
+  border: none;
+  border-radius: 32px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.rr-modal-approve-btn:hover {
+  opacity: 0.88;
+}
+
+.rr-modal-reject-btn {
+  padding: 13px 28px;
+  background-color: #fdedec;
+  color: #e74c3c;
+  border: 1px solid #f1948a;
+  border-radius: 32px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.rr-modal-reject-btn:hover {
+  background-color: #e74c3c;
+  color: #ffffff;
+}
+
+.rr-modal-close-btn {
+  padding: 13px 28px;
+  background-color: #eee8da;
+  color: #1f3b10;
+  border: none;
+  border-radius: 32px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.rr-modal-close-btn:hover {
+  opacity: 0.88;
+}
+/* =========================
+   Summary Cards
+========================= */
+
+.rr-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(220px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.rr-summary-card {
+  background: #ffffff;
+  border: 1px solid #d8cfbf;
+  border-radius: 16px;
+  padding: 20px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  transition: 0.2s;
+}
+
+.rr-summary-card:hover {
+  transform: translateY(-2px);
+}
+
+.rr-summary-num {
+  font-size: 30px;
+  font-weight: 900;
+  color: #1f3b10;
+}
+
+.rr-summary-label {
+  margin-top: 6px;
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.rr-summary-icon {
+  font-size: 30px;
+}
+
+/* =========================
+   Search
+========================= */
+
+.rr-search-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  background: #ffffff;
+
+  border: 1px solid #d8cfbf;
+  border-radius: 14px;
+
+  padding: 12px 16px;
+
+  margin-bottom: 20px;
+}
+
+.rr-search-box input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+
+  font-size: 14px;
+}
+
+.rr-clear-search {
+  border: none;
+  background: transparent;
+
+  cursor: pointer;
+
+  color: #9ca3af;
+  font-size: 14px;
+  font-weight: 900;
+}
+
+/* =========================
+   Role Badge
+========================= */
+
+.rr-role-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 6px 12px;
+
+  border-radius: 999px;
+
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.rr-role-badge.restaurant {
+  background: #eaf9ea;
+  color: #1e8449;
+  border: 1px solid #a9dfbf;
+}
+
+.rr-role-badge.charity {
+  background: #ebf5fb;
+  color: #2471a3;
+  border: 1px solid #aed6f1;
+}
+
+/* =========================
+   New Action Buttons
+========================= */
+
+.rr-approve-action {
+  padding: 7px 12px;
+
+  border: none;
+  border-radius: 8px;
+
+  background: #1f3b10;
+  color: white;
+
+  cursor: pointer;
+
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.rr-approve-action:hover {
+  opacity: 0.9;
+}
+
+.rr-reject-action {
+  padding: 7px 12px;
+
+  border-radius: 8px;
+
+  border: 1px solid #f1948a;
+
+  background: #fdedec;
+  color: #e74c3c;
+
+  cursor: pointer;
+
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.rr-reject-action:hover {
+  background: #e74c3c;
+  color: white;
+}
+
+/* =========================
+   Single Column Modal
+========================= */
+
+.rr-modal-body.single {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* =========================
+   Mobile
+========================= */
+
+@media (max-width: 900px) {
+  .rr-summary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .rr-table-head,
+  .rr-table-row {
+    grid-template-columns: 1.2fr 1fr 1.5fr 1fr 1.5fr;
+  }
+}

@@ -1,0 +1,65 @@
+const mockUser = {
+    name: "Nile Garden Restaurant",
+    location: "Zamalek, Cairo",
+    notifCount: 5,
+    stats: {
+        donations: 142,
+        mealsSaved: 1380,
+        co2Reduced: "276 kg",
+    },
+    quickStats: {
+        active: 2,
+        reserved: 1,
+        thisWeek: 8,
+        expiring: 1,
+    },
+    listings: [
+        {
+            id: 1,
+            title: "Grilled Chicken & Rice",
+            status: "active",
+            portions: "25 portions",
+            time: "6:00 PM – 7:30 PM",
+            postedAgo: "10 min ago",
+            claimedBy: null,
+        },
+        {
+            id: 2,
+            title: "Mixed Salad Bowls",
+            status: "reserved",
+            portions: "18 portions",
+            time: "7:00 PM – 8:00 PM",
+            postedAgo: "1 hr ago",
+            claimedBy: "Cairo Food Bank",
+        },
+        {
+            id: 3,
+            title: "Bread & Pastries",
+            status: "active",
+            portions: "40 items",
+            time: "Tomorrow 8:00 AM",
+            postedAgo: "2 hrs ago",
+            claimedBy: null,
+        },
+        {
+            id: 4,
+            title: "Lentil Soup",
+            status: "collected",
+            portions: "30 portions",
+            time: "Yesterday 5:00 PM",
+            postedAgo: "1 day ago",
+            claimedBy: "Hope Charity",
+        },
+        {
+            id: 5,
+            title: "Grilled Fish & Vegetables",
+            status: "expired",
+            portions: "12 portions",
+            time: "Yesterday 7:00 PM",
+            postedAgo: "1 day ago",
+            claimedBy: null,
+        },
+    ],
+};
+
+export default mockUser;
