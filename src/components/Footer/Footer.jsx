@@ -61,8 +61,8 @@ function Footer() {
               <>
                 <h2>Contact Us</h2>
 
-                <p>Email: support@rebite.com</p>
-                <p>Phone: +20 100 123 4567</p>
+                <p>Email: rebitemanagementsystem</p>
+                <p>Phone: +20 100 000 0000</p>
                 <p>Location: Cairo, Egypt</p>
               </>
             )}
