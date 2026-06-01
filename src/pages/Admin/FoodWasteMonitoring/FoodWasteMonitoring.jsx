@@ -51,10 +51,39 @@ function FoodWasteMonitoring() {
 
     return names[category] || category || "Other";
   }
+function formatTime(time) {
+  if (!time) return "—";
+  return time.slice(0, 5);
+}
 
-  function isExpired(record) {
-    return record.expiry && new Date(record.expiry) < new Date();
+function getPickupDeadline(record) {
+  if (!record.pickup_until) return null;
+
+  const now = new Date();
+
+  const [untilH, untilM] = record.pickup_until.split(":").map(Number);
+
+  const deadline = new Date(now);
+  deadline.setHours(untilH, untilM, 0, 0);
+
+  if (record.pickup_from) {
+    const [fromH, fromM] = record.pickup_from.split(":").map(Number);
+
+    const pickupStart = new Date(now);
+    pickupStart.setHours(fromH, fromM, 0, 0);
+
+    if (deadline < pickupStart) {
+      deadline.setDate(deadline.getDate() + 1);
+    }
   }
+
+  return deadline;
+}
+  function isExpired(record) {
+  const deadline = getPickupDeadline(record);
+
+  return deadline ? deadline < new Date() : false;
+}
 
   const totalQuantity = records.reduce((acc, r) => {
     return acc + Number(r.quantity || 0);
@@ -194,7 +223,7 @@ function FoodWasteMonitoring() {
 
                   <span className="fw-quantity">{r.quantity || 0}</span>
 
-                  <span className="fw-date">{formatDate(r.expiry)}</span>
+                  <span className="fw-date">{formatTime(r.pickup_until)}</span>
 
                   <span>
                     <div
@@ -293,12 +322,10 @@ function FoodWasteMonitoring() {
                 </span>
               </div>
 
-              <div className="fw-detail-item">
-                <span className="fw-detail-label">Expiry Date</span>
-                <span className="fw-detail-val">
-                  {formatDate(selectedWaste.expiry)}
-                </span>
-              </div>
+              <span className="fw-detail-label">Pickup Deadline</span>
+<span className="fw-detail-val">
+  {formatTime(selectedWaste.pickup_until)}
+</span>
 
               <div className="fw-detail-item">
                 <span className="fw-detail-label">Pickup Time</span>
