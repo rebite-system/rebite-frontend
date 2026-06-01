@@ -100,7 +100,7 @@ function SignUp() {
                 role: form.role,
             });
 
-            setShowVerifyModal(true);
+           navigate("/signin");
         } catch (err) {
             if (err.response?.data?.errors) {
                 const apiErrors = err.response.data.errors;
