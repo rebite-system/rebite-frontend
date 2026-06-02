@@ -329,8 +329,14 @@ function formatPickupWindow(record) {
                   </span>
 
                   <span className="fw-pickup-card">
-                    {formatPickupWindow(r)}
-                  </span>
+  <div className="pickup-time">
+    🕒 {formatPickupWindow(r)}
+  </div>
+
+  <div className="pickup-date">
+    📅 {new Date(r.created_at).toLocaleDateString("en-GB")}
+  </div>
+</span>
 
                   <span className={expired ? "fw-time-expired" : "fw-time-left"}>
                     {getTimeLeftText(r)}
