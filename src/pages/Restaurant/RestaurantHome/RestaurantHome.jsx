@@ -32,18 +32,16 @@ function RestaurantHome() {
   }, []);
   useEffect(() => {
   const hasPendingAI = listings.some(
-    (item) =>
-      getDisplayStatus(item) === "active" &&
-      !item.ai_priority_level
+    (item) => !item.ai_priority_level
   );
 
   if (!hasPendingAI) return;
 
-  const interval = setInterval(() => {
+  const timer = setTimeout(() => {
     fetchFoods();
-  }, 5000);
+  }, 3000);
 
-  return () => clearInterval(interval);
+  return () => clearTimeout(timer);
 }, [listings]);
 
   async function fetchFoods() {

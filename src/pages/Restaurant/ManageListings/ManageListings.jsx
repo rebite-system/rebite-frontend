@@ -23,21 +23,20 @@ function ManageListings() {
   useEffect(() => {
     fetchListings();
   }, []);
-  useEffect(() => {
+ useEffect(() => {
   const hasPendingAI = listings.some(
-    (item) =>
-      item.status === "active" &&
-      !item.ai_priority_level
+    (item) => !item.ai_priority_level
   );
 
   if (!hasPendingAI) return;
 
-  const interval = setInterval(() => {
+  const timer = setTimeout(() => {
     fetchListings();
-  }, 5000);
+  }, 3000);
 
-  return () => clearInterval(interval);
+  return () => clearTimeout(timer);
 }, [listings]);
+ 
 
   async function fetchListings() {
     try {
