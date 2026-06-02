@@ -42,21 +42,15 @@ function RegistrationRequests() {
     }
   }
 
-  async function handleReject(id) {
-    const confirmed = window.confirm(
-      "Are you sure you want to reject this registration request?"
-    );
-
-    if (!confirmed) return;
-
-    try {
-      await api.post(`/admin/reject/${id}`);
-      setSelectedRequest(null);
-      fetchRequests();
-    } catch (err) {
-      alert(err.response?.data?.message || "Reject failed");
-    }
+ async function handleReject(id) {
+  try {
+    await api.post(`/admin/reject/${id}`);
+    setSelectedRequest(null);
+    fetchRequests();
+  } catch (err) {
+    alert(err.response?.data?.message || "Reject failed");
   }
+}
 
   function formatDate(date) {
     if (!date) return "—";
