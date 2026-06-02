@@ -297,7 +297,7 @@ function AdminDashboard() {
 
           <button
             className="ad-view-all"
-            onClick={() => navigate("/admin/registration-requests")}
+            onClick={() => navigate("/admin/requests")}
           >
             View All →
           </button>
