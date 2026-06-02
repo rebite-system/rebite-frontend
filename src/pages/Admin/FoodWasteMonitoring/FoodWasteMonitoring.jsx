@@ -114,7 +114,7 @@ function FoodWasteMonitoring() {
       const [untilH, untilM] = record.pickup_until.slice(0, 5).split(":").map(Number);
 
       if (untilH * 60 + untilM < fromH * 60 + fromM) {
-        nextDay = " (+1 day)";
+        nextDay = " nextday";
       }
     }
 
@@ -195,6 +195,30 @@ function FoodWasteMonitoring() {
 
     return matchSearch && matchCategory;
   });
+  const sortedFiltered = [...filtered].sort((a, b) => {
+  const order = {
+    High: 1,
+    Medium: 2,
+    Low: 3,
+    Expired: 4,
+    "N/A": 5,
+  };
+
+  const priorityA = getCurrentPriority(a);
+  const priorityB = getCurrentPriority(b);
+
+  if (order[priorityA] !== order[priorityB]) {
+    return order[priorityA] - order[priorityB];
+  }
+
+  const hoursA = getHoursLeft(a);
+  const hoursB = getHoursLeft(b);
+
+  if (hoursA === null) return 1;
+  if (hoursB === null) return -1;
+
+  return hoursA - hoursB;
+});
 
   return (
     <div className="food-waste-monitoring">
@@ -290,7 +314,7 @@ function FoodWasteMonitoring() {
           ) : filtered.length === 0 ? (
             <div className="fw-empty">No food listings found</div>
           ) : (
-            filtered.map((r) => {
+  sortedFiltered.map((r)=> {
               const expired = isExpired(r);
               const priority = getCurrentPriority(r);
 
