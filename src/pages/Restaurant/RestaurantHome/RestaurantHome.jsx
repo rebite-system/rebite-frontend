@@ -131,6 +131,17 @@ function getPriorityRank(item) {
 
   return 50;
 }
+function getDisplayPriority(item) {
+  if (item.status === "expired") return "Expired";
+
+  const priority = item.ai_priority_level?.toLowerCase();
+
+  if (priority === "high") return "High";
+  if (priority === "medium") return "Medium";
+  if (priority === "low") return "Low";
+
+  return "Low";
+}
 
   const filteredListings =
     activeTab === "all"
@@ -264,9 +275,17 @@ function getPriorityRank(item) {
                     </p>
                   </div>
 
-                  <span className={`status-badge ${listing.status || "active"}`}>
-                    {statusConfig[listing.status]?.label || "Active"}
-                  </span>
+                  <div className="listing-badges">
+  <span className={`status-badge ${listing.status || "active"}`}>
+    {statusConfig[listing.status]?.label || "Active"}
+  </span>
+
+  <span
+    className={`priority-badge ${getDisplayPriority(listing).toLowerCase()}`}
+  >
+    {getDisplayPriority(listing)}
+  </span>
+</div>
                 </div>
 
                 <div className="lcard-meta">
