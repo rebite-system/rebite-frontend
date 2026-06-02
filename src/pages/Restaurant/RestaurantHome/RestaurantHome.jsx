@@ -38,7 +38,23 @@ function RestaurantHome() {
       const res = await api.get("/foods");
       const foods = res.data.data?.data || res.data.data || [];
 
-      setListings(foods);
+      const sortedFoods = [...foods].sort((a, b) => {
+  const getRank = (item) => {
+    if (item.status === "expired") return 5;
+    if (item.status === "collected") return 4;
+    if (item.status === "reserved") return 3;
+
+    if (item.ai_priority_level === "High") return 0;
+    if (item.ai_priority_level === "Medium") return 1;
+    if (item.ai_priority_level === "Low") return 2;
+
+    return 6;
+  };
+
+  return getRank(a) - getRank(b);
+});
+
+setListings(sortedFoods);
     } catch (err) {
       console.log(err.response?.data || err.message);
     } finally {
