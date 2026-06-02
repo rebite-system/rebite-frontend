@@ -39,10 +39,10 @@ function RestaurantHome() {
       const foods = res.data.data?.data || res.data.data || [];
 
       const sortedFoods = [...foods].sort((a, b) => {
-  return getPriorityRank(a) - getPriorityRank(b);
-});
+        return getPriorityRank(a) - getPriorityRank(b);
+      });
 
-setListings(sortedFoods);
+      setListings(sortedFoods);
     } catch (err) {
       console.log(err.response?.data || err.message);
     } finally {
@@ -78,75 +78,89 @@ setListings(sortedFoods);
 
     return names[category] || "No category";
   }
+
   function getPickupDeadline(item) {
-  if (!item.pickup_until) return null;
+    if (!item.pickup_until) return null;
 
-  const baseDate = item.created_at ? new Date(item.created_at) : new Date();
+    const baseDate = item.created_at ? new Date(item.created_at) : new Date();
 
-  const [untilH, untilM] = item.pickup_until
-    .slice(0, 5)
-    .split(":")
-    .map(Number);
-
-  const deadline = new Date(baseDate);
-  deadline.setHours(untilH, untilM, 0, 0);
-
-  if (item.pickup_from) {
-    const [fromH, fromM] = item.pickup_from
+    const [untilH, untilM] = item.pickup_until
       .slice(0, 5)
       .split(":")
       .map(Number);
 
-    const start = new Date(baseDate);
-    start.setHours(fromH, fromM, 0, 0);
+    const deadline = new Date(baseDate);
+    deadline.setHours(untilH, untilM, 0, 0);
 
-    if (deadline < start) {
-      deadline.setDate(deadline.getDate() + 1);
+    if (item.pickup_from) {
+      const [fromH, fromM] = item.pickup_from
+        .slice(0, 5)
+        .split(":")
+        .map(Number);
+
+      const start = new Date(baseDate);
+      start.setHours(fromH, fromM, 0, 0);
+
+      if (deadline < start) {
+        deadline.setDate(deadline.getDate() + 1);
+      }
     }
+
+    return deadline;
   }
 
-  return deadline;
-}
+  function getHoursLeft(item) {
+    const deadline = getPickupDeadline(item);
+    if (!deadline) return null;
 
-function getHoursLeft(item) {
-  const deadline = getPickupDeadline(item);
-  if (!deadline) return null;
+    return (deadline.getTime() - new Date().getTime()) / (1000 * 60 * 60);
+  }
 
-  return (
-    (deadline.getTime() - new Date().getTime()) /
-    (1000 * 60 * 60)
-  );
-}
+  function getDisplayStatus(item) {
+    if (item.status === "collected") return "collected";
+    if (item.status === "reserved") return "reserved";
+    if (item.status === "expired") return "expired";
 
-function getPriorityRank(item) {
-  if (item.status === "reserved") return 90;
-  if (item.status === "collected") return 98;
-  if (item.status === "expired") return 99;
+    const hoursLeft = getHoursLeft(item);
 
-  const priority = item.ai_priority_level?.toLowerCase();
+    if (hoursLeft !== null && hoursLeft <= 0) return "expired";
 
-  if (priority === "high") return 1;
-  if (priority === "medium") return 2;
-  if (priority === "low") return 3;
+    return "active";
+  }
 
-  return 50;
-}
-function getDisplayPriority(item) {
-  if (item.status === "expired") return "Expired";
+  function getDisplayPriority(item) {
+    const displayStatus = getDisplayStatus(item);
 
-  const priority = item.ai_priority_level?.toLowerCase();
+    if (displayStatus === "collected") return "Collected";
+    if (displayStatus === "reserved") return "Reserved";
+    if (displayStatus === "expired") return "Expired";
 
-  if (priority === "high") return "High";
-  if (priority === "medium") return "Medium";
-  if (priority === "low") return "Low";
+    const priority = item.ai_priority_level?.toLowerCase();
 
-  return "Low";
-}
+    if (priority === "high") return "High";
+    if (priority === "medium") return "Medium";
+    if (priority === "low") return "Low";
+
+    return "Low";
+  }
+
+  function getPriorityRank(item) {
+    const priority = getDisplayPriority(item);
+
+    if (priority === "High") return 1;
+    if (priority === "Medium") return 2;
+    if (priority === "Low") return 3;
+    if (priority === "Reserved") return 4;
+    if (priority === "Collected") return 5;
+    if (priority === "Expired") return 6;
+
+    return 99;
+  }
 
   const filteredListings =
     activeTab === "all"
       ? listings
-      : listings.filter((item) => item.status === activeTab);
+      : listings.filter((item) => getDisplayStatus(item) === activeTab);
 
   const collectedClaims = claims.filter(
     (claim) => claim.status === "collected"
@@ -159,9 +173,9 @@ function getDisplayPriority(item) {
 
   const stats = {
     total: listings.length,
-    active: listings.filter((item) => item.status === "active").length,
-    reserved: listings.filter((item) => item.status === "reserved").length,
-    collected: listings.filter((item) => item.status === "collected").length,
+    active: listings.filter((item) => getDisplayStatus(item) === "active").length,
+    reserved: listings.filter((item) => getDisplayStatus(item) === "reserved").length,
+    collected: listings.filter((item) => getDisplayStatus(item) === "collected").length,
     savedPortions,
   };
 
@@ -211,14 +225,12 @@ function getDisplayPriority(item) {
           <h2>{stats.collected}</h2>
           <p>Collected Listings</p>
         </div>
-
-
       </section>
 
- <div className="waste-impact-note">
-  🌱 Waste Reduction Impact: {stats.savedPortions} portions saved from
-  waste through successful donations.
-</div>
+      <div className="waste-impact-note">
+        🌱 Waste Reduction Impact: {stats.savedPortions} portions saved from
+        waste through successful donations.
+      </div>
 
       <div className="tab-bar-wrap">
         <div className="tab-bar">
@@ -232,7 +244,11 @@ function getDisplayPriority(item) {
 
               {tab.key !== "all" && (
                 <span className="tab-cnt">
-                  {listings.filter((item) => item.status === tab.key).length}
+                  {
+                    listings.filter(
+                      (item) => getDisplayStatus(item) === tab.key
+                    ).length
+                  }
                 </span>
               )}
             </button>
@@ -261,71 +277,74 @@ function getDisplayPriority(item) {
         </div>
       ) : (
         <div className="listings">
-          {filteredListings.map((listing) => (
-            <div className="listing-card" key={listing.id}>
-              <div className={`stripe ${listing.status || "active"}`} />
+          {filteredListings.map((listing) => {
+            const displayStatus = getDisplayStatus(listing);
+            const displayPriority = getDisplayPriority(listing);
 
-              <div className="lcard-body">
-                <div className="lcard-top">
-                  <div>
-                    <h3 className="lcard-title">{listing.title}</h3>
+            return (
+              <div className="listing-card" key={listing.id}>
+                <div className={`stripe ${displayStatus}`} />
 
-                    <p className="lcard-category">
-                      {formatCategory(listing.category)}
-                    </p>
+                <div className="lcard-body">
+                  <div className="lcard-top">
+                    <div>
+                      <h3 className="lcard-title">{listing.title}</h3>
+
+                      <p className="lcard-category">
+                        {formatCategory(listing.category)}
+                      </p>
+                    </div>
+
+                    <div className="listing-badges">
+                      <span className={`status-badge ${displayStatus}`}>
+                        {statusConfig[displayStatus]?.label || "Active"}
+                      </span>
+
+                      <span
+                        className={`priority-badge ${displayPriority.toLowerCase()}`}
+                      >
+                        {displayPriority}
+                      </span>
+                    </div>
                   </div>
 
-                  <div className="listing-badges">
-  <span className={`status-badge ${listing.status || "active"}`}>
-    {statusConfig[listing.status]?.label || "Active"}
-  </span>
+                  <div className="lcard-meta">
+                    <span>🍽️ {listing.quantity} portions</span>
 
-  <span
-    className={`priority-badge ${getDisplayPriority(listing).toLowerCase()}`}
-  >
-    {getDisplayPriority(listing)}
-  </span>
-</div>
-                </div>
+                    <span>
+                      🕐 {formatTime(listing.pickup_from, listing.pickup_until)}
+                    </span>
 
-                <div className="lcard-meta">
-                  <span>🍽️ {listing.quantity} portions</span>
+                    <span>
+                      {listing.created_at
+                        ? new Date(listing.created_at).toLocaleDateString()
+                        : "—"}
+                    </span>
+                  </div>
 
-                  <span>
-                    🕐 {formatTime(listing.pickup_from, listing.pickup_until)}
-                  </span>
+                  {listing.notes && <p className="lcard-notes">{listing.notes}</p>}
 
-                  <span>
-                    {listing.created_at
-                      ? new Date(listing.created_at).toLocaleDateString()
-                      : "—"}
-                  </span>
-                </div>
+                  <div className="lcard-bottom">
+                    {displayStatus === "active" && (
+                      <span className="awaiting">Awaiting charity request...</span>
+                    )}
 
-                {listing.notes && (
-                  <p className="lcard-notes">{listing.notes}</p>
-                )}
+                    {displayStatus === "reserved" && (
+                      <span className="reserved-text">Reserved for pickup</span>
+                    )}
 
-                <div className="lcard-bottom">
-                  {listing.status === "active" && (
-                    <span className="awaiting">Awaiting charity request...</span>
-                  )}
+                    {displayStatus === "collected" && (
+                      <span className="collected-text">Collected successfully</span>
+                    )}
 
-                  {listing.status === "reserved" && (
-                    <span className="reserved-text">Reserved for pickup</span>
-                  )}
-
-                  {listing.status === "collected" && (
-                    <span className="collected-text">Collected successfully</span>
-                  )}
-
-                  {listing.status === "expired" && (
-                    <span className="expired-text">Listing expired</span>
-                  )}
+                    {displayStatus === "expired" && (
+                      <span className="expired-text">Listing expired</span>
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>
