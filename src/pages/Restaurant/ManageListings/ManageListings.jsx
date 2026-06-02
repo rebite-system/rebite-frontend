@@ -198,9 +198,38 @@ function ManageListings() {
     }
   }
 
-  const activeCount = listings.filter(
-    (item) => item.status === "active"
-  ).length;
+  const activeCount = listings.filter((item) => {
+  if (item.status === "collected") return false;
+
+  const now = new Date();
+
+  const [fromHour, fromMinute] =
+    item.pickup_from?.split(":").map(Number) || [0,0];
+
+  const [untilHour, untilMinute] =
+    item.pickup_until?.split(":").map(Number) || [0,0];
+
+  const expiryDate = new Date();
+
+  expiryDate.setHours(
+    untilHour,
+    untilMinute,
+    0,
+    0
+  );
+
+  if (
+    untilHour < fromHour ||
+    (untilHour === fromHour &&
+      untilMinute <= fromMinute)
+  ) {
+    expiryDate.setDate(
+      expiryDate.getDate() + 1
+    );
+  }
+
+  return now <= expiryDate;
+}).length;
 
   const totalPortions = listings.reduce((sum, item) => {
     return sum + Number(item.quantity || 0);
@@ -283,9 +312,58 @@ function ManageListings() {
                 🕐 {formatTime(item.pickup_from, item.pickup_until)}
               </span>
 
-              <span className={`status-badge ${item.status || "active"}`}>
-                {item.status || "active"}
-              </span>
+              {(() => {
+  const now = new Date();
+
+  const [fromHour, fromMinute] = item.pickup_from
+    ?.split(":")
+    .map(Number) || [0, 0];
+
+  const [untilHour, untilMinute] = item.pickup_until
+    ?.split(":")
+    .map(Number) || [0, 0];
+
+  const expiryDate = new Date();
+
+  expiryDate.setHours(
+    untilHour,
+    untilMinute,
+    0,
+    0
+  );
+
+  if (
+    untilHour < fromHour ||
+    (untilHour === fromHour &&
+      untilMinute <= fromMinute)
+  ) {
+    expiryDate.setDate(
+      expiryDate.getDate() + 1
+    );
+  }
+
+  const isExpired = now > expiryDate;
+
+  let badge = "Low";
+
+  if (item.status === "collected") {
+    badge = "Collected";
+  } else if (isExpired) {
+    badge = "Expired";
+  } else if (
+    item.ai_priority_level
+  ) {
+    badge = item.ai_priority_level;
+  }
+
+  return (
+    <span
+      className={`priority-badge ${badge.toLowerCase()}`}
+    >
+      {badge}
+    </span>
+  );
+})()}
 
               <span className="mm-notes">{item.notes || "—"}</span>
 
