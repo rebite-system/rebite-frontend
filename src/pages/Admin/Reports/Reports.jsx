@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
 import api from "../../../api/axios";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
+import * as XLSX from "xlsx";
 import "./Reports.css";
 
 function Reports() {
@@ -8,10 +11,7 @@ function Reports() {
   const [dateTo, setDateTo] = useState("2026-05-30");
   const [generated, setGenerated] = useState(false);
   const [overviewStats, setOverviewStats] = useState([]);
-  const [currentReport, setCurrentReport] = useState({
-    stats: [],
-    summary: [],
-  });
+  const [currentReport, setCurrentReport] = useState({ stats: [], summary: [] });
 
   useEffect(() => {
     fetchOverviewStats();
@@ -30,11 +30,7 @@ function Reports() {
   async function handleGenerate() {
     try {
       const res = await api.get("/admin/reports", {
-        params: {
-          type: reportType,
-          date_from: dateFrom,
-          date_to: dateTo,
-        },
+        params: { type: reportType, date_from: dateFrom, date_to: dateTo },
       });
 
       setCurrentReport(res.data.data || { stats: [], summary: [] });
@@ -54,15 +50,49 @@ function Reports() {
     );
   }
 
+  function handlePDFPreview() {
+    const doc = new jsPDF();
+
+    doc.setFontSize(18);
+    doc.text(reportType, 14, 18);
+
+    doc.setFontSize(11);
+    doc.text(`${dateFrom} to ${dateTo}`, 14, 28);
+
+    autoTable(doc, {
+      startY: 40,
+      head: [["Label", "Value"]],
+      body: currentReport.stats.map((stat) => [stat.label, stat.value]),
+    });
+
+    autoTable(doc, {
+      startY: doc.lastAutoTable.finalY + 12,
+      head: [["Summary", "Value"]],
+      body: currentReport.summary.map((item) => [item.label, item.value]),
+    });
+
+    doc.save(`${reportType}.pdf`);
+  }
+
+  function handleExcelPreview() {
+    const statsSheet = XLSX.utils.json_to_sheet(currentReport.stats);
+    const summarySheet = XLSX.utils.json_to_sheet(currentReport.summary);
+
+    const workbook = XLSX.utils.book_new();
+
+    XLSX.utils.book_append_sheet(workbook, statsSheet, "Stats");
+    XLSX.utils.book_append_sheet(workbook, summarySheet, "Summary");
+
+    XLSX.writeFile(workbook, `${reportType}.xlsx`);
+  }
+
   return (
     <div className="reports">
       <div className="rp-header">
         <div>
           <h1 className="rp-title">Reports</h1>
-
           <p className="rp-sub">
-            Generate platform summaries for donations, food waste, users, and
-            impact.
+            Generate platform summaries for donations, food waste, users, and impact.
           </p>
         </div>
       </div>
@@ -80,10 +110,8 @@ function Reports() {
         <div className="rp-card-header">
           <div>
             <h2 className="rp-card-title">Generate Report</h2>
-
             <p className="rp-card-sub">
-              Select report type and date range to preview platform
-              performance.
+              Select report type and date range to preview platform performance.
             </p>
           </div>
         </div>
@@ -91,7 +119,6 @@ function Reports() {
         <div className="rp-config-grid">
           <div className="rp-field">
             <label className="rp-label">Report Type</label>
-
             <select
               className="rp-input"
               value={reportType}
@@ -109,7 +136,6 @@ function Reports() {
 
           <div className="rp-field">
             <label className="rp-label">Date From</label>
-
             <input
               className="rp-input"
               type="date"
@@ -120,7 +146,6 @@ function Reports() {
 
           <div className="rp-field">
             <label className="rp-label">Date To</label>
-
             <input
               className="rp-input"
               type="date"
@@ -140,15 +165,18 @@ function Reports() {
           <div className="rp-result-header">
             <div>
               <h2 className="rp-result-title">{reportType}</h2>
-
               <p className="rp-result-dates">
                 {dateFrom} → {dateTo}
               </p>
             </div>
 
             <div className="rp-export-btns">
-              <button className="rp-export-btn">PDF Preview</button>
-              <button className="rp-export-btn">Excel Preview</button>
+              <button className="rp-export-btn" onClick={handlePDFPreview}>
+                PDF Preview
+              </button>
+              <button className="rp-export-btn" onClick={handleExcelPreview}>
+                Excel Preview
+              </button>
             </div>
           </div>
 
@@ -186,8 +214,7 @@ function Reports() {
           </div>
 
           <p className="rp-note">
-            This report preview is prepared for admin analysis and connected to
-            backend report APIs.
+            This report preview is prepared for admin analysis and connected to backend report APIs.
           </p>
         </div>
       )}
