@@ -296,16 +296,10 @@ function RestaurantHome() {
                     </div>
 
                     <div className="listing-badges">
-                      <span className={`status-badge ${displayStatus}`}>
-                        {statusConfig[displayStatus]?.label || "Active"}
-                      </span>
-
-                      <span
-                        className={`priority-badge ${displayPriority.toLowerCase()}`}
-                      >
-                        {displayPriority}
-                      </span>
-                    </div>
+  <span className={`priority-badge ${displayPriority.toLowerCase()}`}>
+    {displayPriority}
+  </span>
+</div>
                   </div>
 
                   <div className="lcard-meta">
