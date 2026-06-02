@@ -446,6 +446,10 @@
   background: #dbeafe;
   color: #2563eb;
 }
+.priority-badge.Reserved{
+  background: #dbeafe;
+  color: #25ebeb;
+}
 
 .priority-badge.expired {
   background: #fde8e8;
