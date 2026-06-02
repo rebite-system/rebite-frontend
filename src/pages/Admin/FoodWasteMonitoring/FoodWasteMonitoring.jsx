@@ -47,19 +47,20 @@ function FoodWasteMonitoring() {
   function getPickupDeadline(record) {
     if (!record.pickup_until) return null;
 
-    const now = new Date();
-    const [untilH, untilM] = record.pickup_until.split(":").map(Number);
+    const baseDate = record.created_at ? new Date(record.created_at) : new Date();
 
-    const deadline = new Date(now);
+    const [untilH, untilM] = record.pickup_until.slice(0, 5).split(":").map(Number);
+
+    const deadline = new Date(baseDate);
     deadline.setHours(untilH, untilM, 0, 0);
 
     if (record.pickup_from) {
-      const [fromH, fromM] = record.pickup_from.split(":").map(Number);
+      const [fromH, fromM] = record.pickup_from.slice(0, 5).split(":").map(Number);
 
-      const pickupStart = new Date(now);
-      pickupStart.setHours(fromH, fromM, 0, 0);
+      const start = new Date(baseDate);
+      start.setHours(fromH, fromM, 0, 0);
 
-      if (deadline < pickupStart) {
+      if (deadline < start) {
         deadline.setDate(deadline.getDate() + 1);
       }
     }
@@ -67,9 +68,16 @@ function FoodWasteMonitoring() {
     return deadline;
   }
 
-  function isExpired(record) {
+  function getHoursLeft(record) {
     const deadline = getPickupDeadline(record);
-    return deadline ? deadline < new Date() : false;
+    if (!deadline) return null;
+
+    return (deadline.getTime() - new Date().getTime()) / (1000 * 60 * 60);
+  }
+
+  function isExpired(record) {
+    const hoursLeft = getHoursLeft(record);
+    return hoursLeft !== null && hoursLeft <= 0;
   }
 
   function getTimeLeftText(record) {
@@ -79,34 +87,89 @@ function FoodWasteMonitoring() {
     const diffMs = deadline.getTime() - new Date().getTime();
     const diffMinutes = Math.floor(diffMs / (1000 * 60));
 
-    if (diffMinutes <= 0) return "Expired";
+    if (diffMinutes <= 0) {
+      const ago = Math.abs(diffMinutes);
+      const h = Math.floor(ago / 60);
+      const m = ago % 60;
 
-    const hours = Math.floor(diffMinutes / 60);
-    const minutes = diffMinutes % 60;
+      if (h === 0) return `Expired ${m}m ago`;
+      return `Expired ${h}h ${m}m ago`;
+    }
 
-    if (hours === 0) return `${minutes} min left`;
-    return `${hours}h ${minutes}m left`;
+    const h = Math.floor(diffMinutes / 60);
+    const m = diffMinutes % 60;
+
+    if (h === 0) return `${m}m left`;
+    return `${h}h ${m}m left`;
   }
 
   function formatPickupWindow(record) {
-    return `${formatTime(record.pickup_from)} → ${formatTime(
-      record.pickup_until
-    )}`;
+    const from = formatTime(record.pickup_from);
+    const until = formatTime(record.pickup_until);
+
+    let nextDay = "";
+
+    if (record.pickup_from && record.pickup_until) {
+      const [fromH, fromM] = record.pickup_from.slice(0, 5).split(":").map(Number);
+      const [untilH, untilM] = record.pickup_until.slice(0, 5).split(":").map(Number);
+
+      if (untilH * 60 + untilM < fromH * 60 + fromM) {
+        nextDay = " (+1 day)";
+      }
+    }
+
+    return `${from} → ${until}${nextDay}`;
   }
 
-  function getDisplayPriority(record) {
+  function getCurrentPriority(record) {
     if (isExpired(record)) return "Expired";
-    return record.ai_priority_level || "N/A";
+
+    const hoursLeft = getHoursLeft(record);
+
+    if (hoursLeft === null) return "N/A";
+    if (hoursLeft <= 3) return "High";
+    if (hoursLeft <= 10) return "Medium";
+    return "Low";
   }
 
   function getPriorityClass(record) {
-    if (isExpired(record)) return "expired";
-    return record.ai_priority_level?.toLowerCase() || "na";
+    return getCurrentPriority(record).toLowerCase();
   }
 
-  const totalQuantity = records.reduce((acc, r) => {
-    return acc + Number(r.quantity || 0);
-  }, 0);
+  function getPriorityScore(record) {
+    const priority = getCurrentPriority(record);
+
+    if (priority === "Expired") return "N/A";
+    if (priority === "High") return 90;
+    if (priority === "Medium") return 60;
+    if (priority === "Low") return 20;
+
+    return 0;
+  }
+
+  function getPriorityReason(record) {
+    const priority = getCurrentPriority(record);
+
+    if (priority === "Expired") return "Pickup deadline has passed.";
+    if (priority === "High") return "Less than 3 hours remaining.";
+    if (priority === "Medium") return "Between 4 and 10 hours remaining.";
+    if (priority === "Low") return "More than 10 hours remaining.";
+
+    return "No analysis available.";
+  }
+
+  function getRecommendedAction(record) {
+    const priority = getCurrentPriority(record);
+
+    if (priority === "Expired") return "Remove from available listings.";
+    if (priority === "High") return "Prioritize immediate pickup.";
+    if (priority === "Medium") return "Arrange pickup soon.";
+    if (priority === "Low") return "Normal monitoring.";
+
+    return "No recommendation.";
+  }
+
+  const totalQuantity = records.reduce((acc, r) => acc + Number(r.quantity || 0), 0);
 
   const restaurantsCount = [
     ...new Set(records.map((r) => r.restaurant?.name)),
@@ -139,8 +202,7 @@ function FoodWasteMonitoring() {
         <div>
           <h1 className="fw-title">Food Waste Monitoring</h1>
           <p className="fw-sub">
-            Monitor pickup deadlines, listing status, quantities, and AI waste
-            priority.
+            Monitor pickup deadlines, listing status, quantities, and AI priority.
           </p>
         </div>
       </div>
@@ -212,7 +274,7 @@ function FoodWasteMonitoring() {
 
       <div className="fw-table-wrapper">
         <div className="fw-table">
-          <div className="fw-table-head">
+          <div className="fw-table-head modern">
             <span>Restaurant</span>
             <span>Food</span>
             <span>Quantity</span>
@@ -230,18 +292,32 @@ function FoodWasteMonitoring() {
           ) : (
             filtered.map((r) => {
               const expired = isExpired(r);
+              const priority = getCurrentPriority(r);
 
               return (
-                <div key={r.id} className="fw-table-row">
-                  <span className="fw-restaurant">
-                    {r.restaurant?.name || "Restaurant"}
+                <div key={r.id} className="fw-table-row modern">
+                  <span className="fw-restaurant-block">
+                    <span className="fw-avatar">
+                      {(r.restaurant?.name || "R").substring(0, 2).toUpperCase()}
+                    </span>
+                    <span className="fw-rest-text">
+                      <strong>{r.restaurant?.name || "Restaurant"}</strong>
+                    </span>
                   </span>
 
-                  <span className="fw-food-type">{r.title || "—"}</span>
+                  <span className="fw-food-block">
+                    <strong>{r.title || "—"}</strong>
+                    <small>{formatCategory(r.category)}</small>
+                  </span>
 
-                  <span className="fw-quantity">{r.quantity || 0}</span>
+                  <span className="fw-quantity-block">
+                    <strong>{r.quantity || 0}</strong>
+                    <small>portions</small>
+                  </span>
 
-                  <span className="fw-date">{formatPickupWindow(r)}</span>
+                  <span className="fw-pickup-card">
+                    {formatPickupWindow(r)}
+                  </span>
 
                   <span className={expired ? "fw-time-expired" : "fw-time-left"}>
                     {getTimeLeftText(r)}
@@ -255,16 +331,16 @@ function FoodWasteMonitoring() {
 
                   <span>
                     <div className={`ai-badge ${getPriorityClass(r)}`}>
-                      {getDisplayPriority(r)}
+                      {priority}
                     </div>
+                    <small className="fw-score">
+                      Score: {getPriorityScore(r)}
+                    </small>
                   </span>
 
                   <span className="fw-actions">
-                    <button
-                      className="fw-view-btn"
-                      onClick={() => setSelectedWaste(r)}
-                    >
-                      View
+                    <button className="fw-view-btn" onClick={() => setSelectedWaste(r)}>
+                      View Details
                     </button>
                   </span>
                 </div>
@@ -307,20 +383,6 @@ function FoodWasteMonitoring() {
               </div>
 
               <div className="fw-detail-item">
-                <span className="fw-detail-label">Restaurant Email</span>
-                <span className="fw-detail-val">
-                  {selectedWaste.restaurant?.email || "—"}
-                </span>
-              </div>
-
-              <div className="fw-detail-item">
-                <span className="fw-detail-label">Restaurant Phone</span>
-                <span className="fw-detail-val">
-                  {selectedWaste.restaurant?.phone || "—"}
-                </span>
-              </div>
-
-              <div className="fw-detail-item">
                 <span className="fw-detail-label">Food</span>
                 <span className="fw-detail-val">{selectedWaste.title || "—"}</span>
               </div>
@@ -348,51 +410,40 @@ function FoodWasteMonitoring() {
 
               <div className="fw-detail-item">
                 <span className="fw-detail-label">Time Left</span>
-                <span className="fw-detail-val">
-                  {getTimeLeftText(selectedWaste)}
-                </span>
+                <span className="fw-detail-val">{getTimeLeftText(selectedWaste)}</span>
               </div>
 
               <div className="fw-detail-item">
                 <span className="fw-detail-label">AI Priority</span>
                 <span className="fw-detail-val">
-                  {getDisplayPriority(selectedWaste)}
+                  {getCurrentPriority(selectedWaste)}
                 </span>
               </div>
 
               <div className="fw-detail-item">
                 <span className="fw-detail-label">AI Score</span>
                 <span className="fw-detail-val">
-                  {isExpired(selectedWaste)
-                    ? "Expired"
-                    : selectedWaste.ai_priority_score || 0}
+                  {getPriorityScore(selectedWaste)}
                 </span>
               </div>
 
               <div className="fw-detail-item">
                 <span className="fw-detail-label">AI Reason</span>
                 <span className="fw-detail-val">
-                  {isExpired(selectedWaste)
-                    ? "Pickup deadline has passed."
-                    : selectedWaste.ai_priority_reason || "No analysis available"}
+                  {getPriorityReason(selectedWaste)}
                 </span>
               </div>
 
               <div className="fw-detail-item">
                 <span className="fw-detail-label">Recommended Action</span>
                 <span className="fw-detail-val">
-                  {isExpired(selectedWaste)
-                    ? "Mark as expired and remove from available listings."
-                    : selectedWaste.ai_recommended_action || "No recommendation"}
+                  {getRecommendedAction(selectedWaste)}
                 </span>
               </div>
             </div>
 
             <div className="fw-modal-actions">
-              <button
-                className="fw-close-btn"
-                onClick={() => setSelectedWaste(null)}
-              >
+              <button className="fw-close-btn" onClick={() => setSelectedWaste(null)}>
                 Close
               </button>
             </div>

@@ -358,18 +358,122 @@
   background: #e8f5e9;
   color: #2e7d32;
 }
-.fw-time-left {
+.fw-table-head.modern,
+.fw-table-row.modern {
+  display: grid;
+  grid-template-columns: 1.45fr 1.25fr 0.8fr 1.4fr 1.1fr 1fr 1.15fr 1fr;
+  align-items: center;
+  gap: 18px;
+}
+
+.fw-table-head.modern {
+  color: #435b35;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.fw-table-row.modern {
+  min-height: 96px;
+}
+
+.fw-restaurant-block {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.fw-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 16px;
+  background: #dcf7df;
+  color: #123d0c;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+}
+
+.fw-rest-text {
+  display: flex;
+  flex-direction: column;
+  color: #0c2f08;
+}
+
+.fw-food-block {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: #0c2f08;
+}
+
+.fw-food-block small {
+  width: fit-content;
+  background: #dcf7df;
+  color: #135212;
+  padding: 5px 10px;
+  border-radius: 999px;
   font-weight: 800;
-  color: #1f3b10;
+}
+
+.fw-quantity-block {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  color: #c0392b;
+  font-weight: 900;
+}
+
+.fw-quantity-block small {
+  color: #6b7280;
+  font-weight: 700;
+}
+
+.fw-pickup-card {
+  border: 1px solid #e7d8c4;
+  border-radius: 12px;
+  padding: 12px;
+  font-weight: 900;
+  color: #5d6778;
+  background: #fffdf9;
+}
+
+.fw-time-left {
+  font-weight: 900;
+  color: #0f3d0b;
 }
 
 .fw-time-expired {
-  font-weight: 800;
+  font-weight: 900;
   color: #c0392b;
+}
+
+.fw-score {
+  display: block;
+  margin-top: 6px;
+  color: #6b7280;
+  font-weight: 800;
+  text-align: center;
 }
 
 .ai-badge.expired {
   background: #fdecea;
   color: #c0392b;
   border: 1px solid #f5b7b1;
+}
+
+.ai-badge.high {
+  background: #fdecea;
+  color: #c0392b;
+}
+
+.ai-badge.medium {
+  background: #fff5d9;
+  color: #e67e00;
+}
+
+.ai-badge.low {
+  background: #e9f8eb;
+  color: #1e8449;
 }
