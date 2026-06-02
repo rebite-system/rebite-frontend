@@ -16,11 +16,8 @@ function FoodWasteMonitoring() {
   async function fetchFoodWaste() {
     try {
       setLoading(true);
-
       const res = await api.get("/foods");
-
       const data = res.data.data?.data || res.data.data || res.data || [];
-
       setRecords(data);
     } catch (err) {
       console.log(err.response?.data || err.message);
@@ -28,16 +25,6 @@ function FoodWasteMonitoring() {
     } finally {
       setLoading(false);
     }
-  }
-
-  function formatDate(date) {
-    if (!date) return "—";
-
-    return new Date(date).toLocaleDateString("en-GB", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-    });
   }
 
   function formatCategory(category) {
@@ -51,39 +38,71 @@ function FoodWasteMonitoring() {
 
     return names[category] || category || "Other";
   }
-function formatTime(time) {
-  if (!time) return "—";
-  return time.slice(0, 5);
-}
 
-function getPickupDeadline(record) {
-  if (!record.pickup_until) return null;
-
-  const now = new Date();
-
-  const [untilH, untilM] = record.pickup_until.split(":").map(Number);
-
-  const deadline = new Date(now);
-  deadline.setHours(untilH, untilM, 0, 0);
-
-  if (record.pickup_from) {
-    const [fromH, fromM] = record.pickup_from.split(":").map(Number);
-
-    const pickupStart = new Date(now);
-    pickupStart.setHours(fromH, fromM, 0, 0);
-
-    if (deadline < pickupStart) {
-      deadline.setDate(deadline.getDate() + 1);
-    }
+  function formatTime(time) {
+    if (!time) return "—";
+    return time.slice(0, 5);
   }
 
-  return deadline;
-}
-  function isExpired(record) {
-  const deadline = getPickupDeadline(record);
+  function getPickupDeadline(record) {
+    if (!record.pickup_until) return null;
 
-  return deadline ? deadline < new Date() : false;
-}
+    const now = new Date();
+    const [untilH, untilM] = record.pickup_until.split(":").map(Number);
+
+    const deadline = new Date(now);
+    deadline.setHours(untilH, untilM, 0, 0);
+
+    if (record.pickup_from) {
+      const [fromH, fromM] = record.pickup_from.split(":").map(Number);
+
+      const pickupStart = new Date(now);
+      pickupStart.setHours(fromH, fromM, 0, 0);
+
+      if (deadline < pickupStart) {
+        deadline.setDate(deadline.getDate() + 1);
+      }
+    }
+
+    return deadline;
+  }
+
+  function isExpired(record) {
+    const deadline = getPickupDeadline(record);
+    return deadline ? deadline < new Date() : false;
+  }
+
+  function getTimeLeftText(record) {
+    const deadline = getPickupDeadline(record);
+    if (!deadline) return "—";
+
+    const diffMs = deadline.getTime() - new Date().getTime();
+    const diffMinutes = Math.floor(diffMs / (1000 * 60));
+
+    if (diffMinutes <= 0) return "Expired";
+
+    const hours = Math.floor(diffMinutes / 60);
+    const minutes = diffMinutes % 60;
+
+    if (hours === 0) return `${minutes} min left`;
+    return `${hours}h ${minutes}m left`;
+  }
+
+  function formatPickupWindow(record) {
+    return `${formatTime(record.pickup_from)} → ${formatTime(
+      record.pickup_until
+    )}`;
+  }
+
+  function getDisplayPriority(record) {
+    if (isExpired(record)) return "Expired";
+    return record.ai_priority_level || "N/A";
+  }
+
+  function getPriorityClass(record) {
+    if (isExpired(record)) return "expired";
+    return record.ai_priority_level?.toLowerCase() || "na";
+  }
 
   const totalQuantity = records.reduce((acc, r) => {
     return acc + Number(r.quantity || 0);
@@ -119,10 +138,9 @@ function getPickupDeadline(record) {
       <div className="fw-header">
         <div>
           <h1 className="fw-title">Food Waste Monitoring</h1>
-
           <p className="fw-sub">
-            Monitor food listings, expiry status, quantities, and restaurant
-            waste impact.
+            Monitor pickup deadlines, listing status, quantities, and AI waste
+            priority.
           </p>
         </div>
       </div>
@@ -165,7 +183,6 @@ function getPickupDeadline(record) {
       <div className="fw-filters">
         <div className="fw-search">
           <span>🔍</span>
-
           <input
             placeholder="Search restaurant, food, or category..."
             value={search}
@@ -197,9 +214,10 @@ function getPickupDeadline(record) {
         <div className="fw-table">
           <div className="fw-table-head">
             <span>Restaurant</span>
-            <span>Food Type</span>
+            <span>Food</span>
             <span>Quantity</span>
-            <span>Expiry</span>
+            <span>Pickup Window</span>
+            <span>Time Left</span>
             <span>Status</span>
             <span>AI Priority</span>
             <span>Actions</span>
@@ -223,22 +241,24 @@ function getPickupDeadline(record) {
 
                   <span className="fw-quantity">{r.quantity || 0}</span>
 
-                  <span className="fw-date">{formatTime(r.pickup_until)}</span>
+                  <span className="fw-date">{formatPickupWindow(r)}</span>
+
+                  <span className={expired ? "fw-time-expired" : "fw-time-left"}>
+                    {getTimeLeftText(r)}
+                  </span>
 
                   <span>
-                    <div
-                      className={`fw-status ${
-                        expired ? "expired" : "active"
-                      }`}
-                    >
+                    <div className={`fw-status ${expired ? "expired" : "active"}`}>
                       {expired ? "Expired" : "Active"}
                     </div>
                   </span>
+
                   <span>
-  <div className={`ai-badge ${r.ai_priority_level?.toLowerCase()}`}>
-    {r.ai_priority_level || "N/A"}
-  </div>
-</span>
+                    <div className={`ai-badge ${getPriorityClass(r)}`}>
+                      {getDisplayPriority(r)}
+                    </div>
+                  </span>
+
                   <span className="fw-actions">
                     <button
                       className="fw-view-btn"
@@ -263,10 +283,9 @@ function getPickupDeadline(record) {
           <div className="fw-modal" onClick={(e) => e.stopPropagation()}>
             <div className="fw-modal-header">
               <div>
-                <h2 className="fw-modal-title">Food Waste Details</h2>
-
+                <h2 className="fw-modal-title">Food Listing Details</h2>
                 <p className="fw-modal-sub">
-                  Full food listing information and expiry status.
+                  Pickup timing, current status, and AI priority analysis.
                 </p>
               </div>
 
@@ -302,10 +321,8 @@ function getPickupDeadline(record) {
               </div>
 
               <div className="fw-detail-item">
-                <span className="fw-detail-label">Food Type</span>
-                <span className="fw-detail-val">
-                  {selectedWaste.title || "—"}
-                </span>
+                <span className="fw-detail-label">Food</span>
+                <span className="fw-detail-val">{selectedWaste.title || "—"}</span>
               </div>
 
               <div className="fw-detail-item">
@@ -323,39 +340,52 @@ function getPickupDeadline(record) {
               </div>
 
               <div className="fw-detail-item">
-                <span className="fw-detail-label">Pickup Time</span>
+                <span className="fw-detail-label">Pickup Window</span>
                 <span className="fw-detail-val">
-                  {selectedWaste.pickup_from || "—"} -{" "}
-                  {selectedWaste.pickup_until || "—"}
+                  {formatPickupWindow(selectedWaste)}
                 </span>
               </div>
+
               <div className="fw-detail-item">
-  <span className="fw-detail-label">AI Priority</span>
-  <span className="fw-detail-val">
-    {selectedWaste.ai_priority_level || "Not Analyzed"}
-  </span>
-</div>
+                <span className="fw-detail-label">Time Left</span>
+                <span className="fw-detail-val">
+                  {getTimeLeftText(selectedWaste)}
+                </span>
+              </div>
 
-<div className="fw-detail-item">
-  <span className="fw-detail-label">AI Score</span>
-  <span className="fw-detail-val">
-    {selectedWaste.ai_priority_score || 0}
-  </span>
-</div>
+              <div className="fw-detail-item">
+                <span className="fw-detail-label">AI Priority</span>
+                <span className="fw-detail-val">
+                  {getDisplayPriority(selectedWaste)}
+                </span>
+              </div>
 
-<div className="fw-detail-item">
-  <span className="fw-detail-label">AI Reason</span>
-  <span className="fw-detail-val">
-    {selectedWaste.ai_priority_reason || "No analysis available"}
-  </span>
-</div>
+              <div className="fw-detail-item">
+                <span className="fw-detail-label">AI Score</span>
+                <span className="fw-detail-val">
+                  {isExpired(selectedWaste)
+                    ? "Expired"
+                    : selectedWaste.ai_priority_score || 0}
+                </span>
+              </div>
 
-<div className="fw-detail-item">
-  <span className="fw-detail-label">Recommended Action</span>
-  <span className="fw-detail-val">
-    {selectedWaste.ai_recommended_action || "No recommendation"}
-  </span>
-</div>
+              <div className="fw-detail-item">
+                <span className="fw-detail-label">AI Reason</span>
+                <span className="fw-detail-val">
+                  {isExpired(selectedWaste)
+                    ? "Pickup deadline has passed."
+                    : selectedWaste.ai_priority_reason || "No analysis available"}
+                </span>
+              </div>
+
+              <div className="fw-detail-item">
+                <span className="fw-detail-label">Recommended Action</span>
+                <span className="fw-detail-val">
+                  {isExpired(selectedWaste)
+                    ? "Mark as expired and remove from available listings."
+                    : selectedWaste.ai_recommended_action || "No recommendation"}
+                </span>
+              </div>
             </div>
 
             <div className="fw-modal-actions">

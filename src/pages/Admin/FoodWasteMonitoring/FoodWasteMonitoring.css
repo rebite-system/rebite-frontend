@@ -358,3 +358,18 @@
   background: #e8f5e9;
   color: #2e7d32;
 }
+.fw-time-left {
+  font-weight: 800;
+  color: #1f3b10;
+}
+
+.fw-time-expired {
+  font-weight: 800;
+  color: #c0392b;
+}
+
+.ai-badge.expired {
+  background: #fdecea;
+  color: #c0392b;
+  border: 1px solid #f5b7b1;
+}
