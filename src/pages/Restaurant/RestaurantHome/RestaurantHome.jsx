@@ -30,20 +30,6 @@ function RestaurantHome() {
     fetchFoods();
     fetchClaims();
   }, []);
-  useEffect(() => {
-  const hasPendingAI = listings.some(
-    (item) => !item.ai_priority_level
-  );
-
-  if (!hasPendingAI) return;
-
-  const timer = setTimeout(() => {
-    fetchFoods();
-  }, 3000);
-
-  return () => clearTimeout(timer);
-}, [listings]);
-
   async function fetchFoods() {
     try {
       setLoading(true);

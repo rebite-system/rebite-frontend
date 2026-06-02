@@ -23,19 +23,7 @@ function ManageListings() {
   useEffect(() => {
     fetchListings();
   }, []);
- useEffect(() => {
-  const hasPendingAI = listings.some(
-    (item) => !item.ai_priority_level
-  );
-
-  if (!hasPendingAI) return;
-
-  const timer = setTimeout(() => {
-    fetchListings();
-  }, 3000);
-
-  return () => clearTimeout(timer);
-}, [listings]);
+ 
  
 
   async function fetchListings() {
