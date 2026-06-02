@@ -31,7 +31,11 @@ function ManageListings() {
       const res = await api.get("/foods");
       const data = res.data.data?.data || res.data.data || [];
 
-      setListings(data);
+      const sortedData = [...data].sort((a, b) => {
+        return getBadgeRank(a) - getBadgeRank(b);
+      });
+
+      setListings(sortedData);
     } catch (err) {
       console.log(err.response?.data || err.message);
       setMessage("Failed to load listings.");
@@ -62,6 +66,69 @@ function ManageListings() {
     };
 
     return names[category] || "No category";
+  }
+
+  function getPickupDeadline(item) {
+    if (!item.pickup_until) return null;
+
+    const baseDate = item.created_at ? new Date(item.created_at) : new Date();
+
+    const [untilH, untilM] = item.pickup_until
+      .slice(0, 5)
+      .split(":")
+      .map(Number);
+
+    const deadline = new Date(baseDate);
+    deadline.setHours(untilH, untilM, 0, 0);
+
+    if (item.pickup_from) {
+      const [fromH, fromM] = item.pickup_from
+        .slice(0, 5)
+        .split(":")
+        .map(Number);
+
+      const start = new Date(baseDate);
+      start.setHours(fromH, fromM, 0, 0);
+
+      if (deadline < start) {
+        deadline.setDate(deadline.getDate() + 1);
+      }
+    }
+
+    return deadline;
+  }
+
+  function isExpired(item) {
+    const deadline = getPickupDeadline(item);
+    return deadline ? deadline <= new Date() : false;
+  }
+
+  function getBadge(item) {
+    if (item.status === "reserved") return "Reserved";
+    if (item.status === "expired" || isExpired(item)) return "Expired";
+
+    const priority = item.ai_priority_level?.toLowerCase();
+
+    if (priority === "high") return "High";
+    if (priority === "medium") return "Medium";
+    if (priority === "low") return "Low";
+
+    if (item.status === "collected") return "Collected";
+
+    return "Low";
+  }
+
+  function getBadgeRank(item) {
+    const badge = getBadge(item);
+
+    if (badge === "High") return 1;
+    if (badge === "Medium") return 2;
+    if (badge === "Low") return 3;
+    if (badge === "Collected") return 4;
+    if (badge === "Reserved") return 5;
+    if (badge === "Expired") return 6;
+
+    return 99;
   }
 
   function getExpiryDateTime(from, until) {
@@ -120,9 +187,7 @@ function ManageListings() {
   function validate() {
     const newErrors = {};
 
-    if (!form.title.trim()) {
-      newErrors.title = "Food name is required";
-    }
+    if (!form.title.trim()) newErrors.title = "Food name is required";
 
     if (!form.quantity) {
       newErrors.quantity = "Quantity is required";
@@ -130,13 +195,8 @@ function ManageListings() {
       newErrors.quantity = "Quantity must be more than 0";
     }
 
-    if (!form.pickup_from) {
-      newErrors.pickup_from = "Pickup start time is required";
-    }
-
-    if (!form.pickup_until) {
-      newErrors.pickup_until = "Pickup end time is required";
-    }
+    if (!form.pickup_from) newErrors.pickup_from = "Pickup start time is required";
+    if (!form.pickup_until) newErrors.pickup_until = "Pickup end time is required";
 
     return newErrors;
   }
@@ -150,10 +210,7 @@ function ManageListings() {
     if (Object.keys(validationErrors).length > 0) return;
 
     try {
-      const expiry = getExpiryDateTime(
-        form.pickup_from,
-        form.pickup_until
-      );
+      const expiry = getExpiryDateTime(form.pickup_from, form.pickup_until);
 
       const res = await api.put(`/food/${editItem.id}`, {
         title: form.title,
@@ -166,9 +223,9 @@ function ManageListings() {
       });
 
       setListings((prev) =>
-        prev.map((item) =>
-          item.id === editItem.id ? res.data.data : item
-        )
+        prev
+          .map((item) => (item.id === editItem.id ? res.data.data : item))
+          .sort((a, b) => getBadgeRank(a) - getBadgeRank(b))
       );
 
       setEditItem(null);
@@ -199,37 +256,9 @@ function ManageListings() {
   }
 
   const activeCount = listings.filter((item) => {
-  if (item.status === "collected") return false;
-
-  const now = new Date();
-
-  const [fromHour, fromMinute] =
-    item.pickup_from?.split(":").map(Number) || [0,0];
-
-  const [untilHour, untilMinute] =
-    item.pickup_until?.split(":").map(Number) || [0,0];
-
-  const expiryDate = new Date();
-
-  expiryDate.setHours(
-    untilHour,
-    untilMinute,
-    0,
-    0
-  );
-
-  if (
-    untilHour < fromHour ||
-    (untilHour === fromHour &&
-      untilMinute <= fromMinute)
-  ) {
-    expiryDate.setDate(
-      expiryDate.getDate() + 1
-    );
-  }
-
-  return now <= expiryDate;
-}).length;
+    const badge = getBadge(item);
+    return badge === "High" || badge === "Medium" || badge === "Low";
+  }).length;
 
   const totalPortions = listings.reduce((sum, item) => {
     return sum + Number(item.quantity || 0);
@@ -294,96 +323,45 @@ function ManageListings() {
             <span>Actions</span>
           </div>
 
-          {listings.map((item) => (
-            <div key={item.id} className="mm-row">
-              <div>
-                <span className="mm-item-name">{item.title}</span>
+          {listings.map((item) => {
+            const badge = getBadge(item);
+
+            return (
+              <div key={item.id} className="mm-row">
+                <div>
+                  <span className="mm-item-name">{item.title}</span>
+                </div>
+
+                <span className="mm-category">
+                  {formatCategory(item.category)}
+                </span>
+
+                <span className="mm-portions">
+                  {item.quantity} portions
+                </span>
+
+                <span className="mm-time">
+                  🕐 {formatTime(item.pickup_from, item.pickup_until)}
+                </span>
+
+                <span className={`priority-badge ${badge.toLowerCase()}`}>
+                  {badge}
+                </span>
+
+                <span className="mm-notes">{item.notes || "—"}</span>
+
+                <span className="mm-actions">
+                  <button className="mm-edit-btn" onClick={() => openEditForm(item)}>
+                    Edit
+                  </button>
+
+                  <button className="mm-delete-btn" onClick={() => setDeleteId(item.id)}>
+                    Delete
+                  </button>
+                </span>
               </div>
-
-              <span className="mm-category">
-                {formatCategory(item.category)}
-              </span>
-
-              <span className="mm-portions">
-                {item.quantity} portions
-              </span>
-
-              <span className="mm-time">
-                🕐 {formatTime(item.pickup_from, item.pickup_until)}
-              </span>
-
-              {(() => {
-  const now = new Date();
-
-  const [fromHour, fromMinute] = item.pickup_from
-    ?.split(":")
-    .map(Number) || [0, 0];
-
-  const [untilHour, untilMinute] = item.pickup_until
-    ?.split(":")
-    .map(Number) || [0, 0];
-
-  const expiryDate = new Date();
-
-  expiryDate.setHours(
-    untilHour,
-    untilMinute,
-    0,
-    0
-  );
-
-  if (
-    untilHour < fromHour ||
-    (untilHour === fromHour &&
-      untilMinute <= fromMinute)
-  ) {
-    expiryDate.setDate(
-      expiryDate.getDate() + 1
-    );
-  }
-
-  const isExpired = now > expiryDate;
-
-  let badge = "Low";
-
-  if (item.status === "collected") {
-    badge = "Collected";
-  } else if (isExpired) {
-    badge = "Expired";
-  } else if (
-    item.ai_priority_level
-  ) {
-    badge = item.ai_priority_level;
-  }
-
-  return (
-    <span
-      className={`priority-badge ${badge.toLowerCase()}`}
-    >
-      {badge}
-    </span>
-  );
-})()}
-
-              <span className="mm-notes">{item.notes || "—"}</span>
-
-              <span className="mm-actions">
-                <button
-                  className="mm-edit-btn"
-                  onClick={() => openEditForm(item)}
-                >
-                  Edit
-                </button>
-
-                <button
-                  className="mm-delete-btn"
-                  onClick={() => setDeleteId(item.id)}
-                >
-                  Delete
-                </button>
-              </span>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
 
@@ -392,9 +370,7 @@ function ManageListings() {
           <div className="mm-modal" onClick={(e) => e.stopPropagation()}>
             <h2 className="mm-modal-title">Edit Listing</h2>
 
-            {errors.general && (
-              <div className="mm-error-box">{errors.general}</div>
-            )}
+            {errors.general && <div className="mm-error-box">{errors.general}</div>}
 
             <form onSubmit={handleSave} className="mm-form">
               <div className="mm-field">
@@ -435,9 +411,7 @@ function ManageListings() {
                   onChange={handleChange}
                   min="1"
                 />
-                {errors.quantity && (
-                  <p className="mm-error">{errors.quantity}</p>
-                )}
+                {errors.quantity && <p className="mm-error">{errors.quantity}</p>}
               </div>
 
               <div className="mm-row-fields">
@@ -501,10 +475,7 @@ function ManageListings() {
 
       {deleteId && (
         <div className="mm-overlay" onClick={() => setDeleteId(null)}>
-          <div
-            className="mm-modal mm-confirm"
-            onClick={(e) => e.stopPropagation()}
-          >
+          <div className="mm-modal mm-confirm" onClick={(e) => e.stopPropagation()}>
             <div className="mm-confirm-icon">Delete</div>
 
             <h2 className="mm-modal-title">Delete Listing?</h2>
@@ -514,17 +485,11 @@ function ManageListings() {
             </p>
 
             <div className="mm-modal-actions">
-              <button
-                className="mm-btn-secondary"
-                onClick={() => setDeleteId(null)}
-              >
+              <button className="mm-btn-secondary" onClick={() => setDeleteId(null)}>
                 Cancel
               </button>
 
-              <button
-                className="mm-btn-danger"
-                onClick={() => handleDelete(deleteId)}
-              >
+              <button className="mm-btn-danger" onClick={() => handleDelete(deleteId)}>
                 Delete
               </button>
             </div>
