@@ -417,3 +417,7 @@
   background: #fdecea;
   color: #c0392b;
 }
+.priority-badge.collected {
+  background: #dbeafe;
+  color: #1e40af;
+}
