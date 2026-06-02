@@ -141,21 +141,23 @@ function RestaurantHome() {
     return "active";
   }
 
-  function getDisplayPriority(item) {
-    const displayStatus = getDisplayStatus(item);
+ function getDisplayPriority(item) {
+  const displayStatus = getDisplayStatus(item);
 
-    if (displayStatus === "collected") return "Collected";
-    if (displayStatus === "reserved") return "Reserved";
-    if (displayStatus === "expired") return "Expired";
+  if (displayStatus === "collected") return "Collected";
+  if (displayStatus === "reserved") return "Reserved";
+  if (displayStatus === "expired") return "Expired";
 
-    const priority = item.ai_priority_level?.toLowerCase();
+  const hoursLeft = getHoursLeft(item);
 
-    if (priority === "high") return "High";
-    if (priority === "medium") return "Medium";
-    if (priority === "low") return "Low";
-
+  if (hoursLeft !== null) {
+    if (hoursLeft < 3) return "High";
+    if (hoursLeft <= 10) return "Medium";
     return "Low";
   }
+
+  return "Low";
+}
 
   function getPriorityRank(item) {
     const priority = getDisplayPriority(item);

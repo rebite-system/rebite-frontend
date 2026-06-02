@@ -117,20 +117,24 @@ function ManageListings() {
     return deadline ? deadline <= new Date() : false;
   }
 
-  function getBadge(item) {
-    if (item.status === "reserved") return "Reserved";
-    if (item.status === "expired" || isExpired(item)) return "Expired";
+ function getBadge(item) {
+  if (item.status === "reserved") return "Reserved";
+  if (item.status === "collected") return "Collected";
+  if (item.status === "expired" || isExpired(item)) return "Expired";
 
-    const priority = item.ai_priority_level?.toLowerCase();
+  const deadline = getPickupDeadline(item);
 
-    if (priority === "high") return "High";
-    if (priority === "medium") return "Medium";
-    if (priority === "low") return "Low";
+  if (deadline) {
+    const hoursLeft =
+      (deadline.getTime() - new Date().getTime()) / (1000 * 60 * 60);
 
-    if (item.status === "collected") return "Collected";
-
+    if (hoursLeft < 3) return "High";
+    if (hoursLeft <= 10) return "Medium";
     return "Low";
   }
+
+  return "Low";
+}
 
   function getBadgeRank(item) {
     const badge = getBadge(item);
