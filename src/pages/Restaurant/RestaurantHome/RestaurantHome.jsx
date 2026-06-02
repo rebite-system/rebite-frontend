@@ -119,19 +119,17 @@ function getHoursLeft(item) {
 }
 
 function getPriorityRank(item) {
-  if (item.status === "expired") return 99;
+  if (item.status === "reserved") return 90;
   if (item.status === "collected") return 98;
-  if (item.status === "reserved") return 97;
+  if (item.status === "expired") return 99;
 
-  const hoursLeft = getHoursLeft(item);
+  const priority = item.ai_priority_level?.toLowerCase();
 
-  if (hoursLeft === null) return 96;
+  if (priority === "high") return 1;
+  if (priority === "medium") return 2;
+  if (priority === "low") return 3;
 
-  if (hoursLeft <= 0) return 99;
-  if (hoursLeft <= 3) return 1;      // High
-  if (hoursLeft <= 10) return 2;     // Medium
-
-  return 3;                          // Low
+  return 50;
 }
 
   const filteredListings =
