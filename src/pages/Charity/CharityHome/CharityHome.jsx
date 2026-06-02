@@ -4,8 +4,9 @@ import api from "../../../api/axios";
 
 const urgencyConfig = {
   high: { label: "High", color: "#c0392b", bg: "#fee9e7", border: "#f5b7b1" },
-  medium: { label: "Medium", color: "#9a7d0a", bg: "#fef9e7", border: "#fad7a0" },
+  medium: { label: "Medium", color: "#e67e00", bg: "#fff5d9", border: "#fad7a0" },
   low: { label: "Low", color: "#1e8449", bg: "#eaf9ea", border: "#a9dfbf" },
+  expired: { label: "Expired", color: "#c0392b", bg: "#fdecea", border: "#f5b7b1" },
 };
 
 const filters = [
@@ -21,10 +22,8 @@ function CharityHome() {
   const [listings, setListings] = useState([]);
   const [claims, setClaims] = useState([]);
   const [charityLocation, setCharityLocation] = useState(null);
-
   const [activeFilter, setActiveFilter] = useState("all");
   const [search, setSearch] = useState("");
-
   const [selectedListing, setSelectedListing] = useState(null);
   const [claimQuantity, setClaimQuantity] = useState(1);
   const [claimError, setClaimError] = useState("");
@@ -45,11 +44,9 @@ function CharityHome() {
         longitude: Number(user.longitude),
       };
 
-      if (!charityCoords.latitude || !charityCoords.longitude) {
-        setCharityLocation(null);
-      } else {
-        setCharityLocation(charityCoords);
-      }
+      setCharityLocation(
+        charityCoords.latitude && charityCoords.longitude ? charityCoords : null
+      );
 
       await fetchFoods(charityCoords);
     } catch (err) {
@@ -64,7 +61,10 @@ function CharityHome() {
       const foods = res.data.data?.data || res.data.data || [];
 
       const availableFoods = foods.filter(
-        (food) => Number(food.quantity) > 0 && food.status === "active"
+        (food) =>
+          Number(food.quantity) > 0 &&
+          food.status === "active" &&
+          !isExpired(food)
       );
 
       const formatted = availableFoods.map((food) => {
@@ -99,10 +99,10 @@ function CharityHome() {
             distanceKm !== null
               ? `${distanceKm.toFixed(1)} km`
               : "Location not set",
-          timeLeft: getTimeLeftText(food.pickup_until),
+          timeLeft: getTimeLeftText(food),
           pickup: formatPickup(food.pickup_from, food.pickup_until),
           tags: distanceKm !== null && distanceKm <= 5 ? ["Nearby"] : ["Fresh Food"],
-          urgency: getUrgencyFromPickupUntil(food.pickup_until),
+          urgency: getCurrentUrgency(food),
           claimed: false,
         };
       });
@@ -121,6 +121,83 @@ function CharityHome() {
     } catch (err) {
       console.log(err.response?.data || err.message);
     }
+  }
+
+  function getPickupDeadline(food) {
+    if (!food.pickup_until) return null;
+
+    const baseDate = food.created_at ? new Date(food.created_at) : new Date();
+
+    const [untilH, untilM] = food.pickup_until
+      .slice(0, 5)
+      .split(":")
+      .map(Number);
+
+    const deadline = new Date(baseDate);
+    deadline.setHours(untilH, untilM, 0, 0);
+
+    if (food.pickup_from) {
+      const [fromH, fromM] = food.pickup_from
+        .slice(0, 5)
+        .split(":")
+        .map(Number);
+
+      const start = new Date(baseDate);
+      start.setHours(fromH, fromM, 0, 0);
+
+      if (deadline < start) {
+        deadline.setDate(deadline.getDate() + 1);
+      }
+    }
+
+    return deadline;
+  }
+
+  function getHoursLeft(food) {
+    const deadline = getPickupDeadline(food);
+    if (!deadline) return null;
+
+    return (deadline.getTime() - new Date().getTime()) / (1000 * 60 * 60);
+  }
+
+  function isExpired(food) {
+    const hoursLeft = getHoursLeft(food);
+    return hoursLeft !== null && hoursLeft <= 0;
+  }
+
+  function getCurrentUrgency(food) {
+    if (isExpired(food)) return "expired";
+
+    const hoursLeft = getHoursLeft(food);
+
+    if (hoursLeft === null) return "low";
+    if (hoursLeft <= 3) return "high";
+    if (hoursLeft <= 10) return "medium";
+    return "low";
+  }
+
+  function getTimeLeftText(food) {
+    const deadline = getPickupDeadline(food);
+    if (!deadline) return "Available";
+
+    const minutesLeft = Math.floor(
+      (deadline.getTime() - new Date().getTime()) / (1000 * 60)
+    );
+
+    if (minutesLeft <= 0) return "Expired";
+
+    const hours = Math.floor(minutesLeft / 60);
+    const minutes = minutesLeft % 60;
+
+    if (hours === 0) return `${minutes}m left`;
+    return `${hours}h ${minutes}m left`;
+  }
+
+  function formatPickup(from, until) {
+    if (!from && !until) return "—";
+    return `${from ? from.slice(0, 5) : "—"} – ${
+      until ? until.slice(0, 5) : "—"
+    }`;
   }
 
   function calculateDistanceKm(lat1, lon1, lat2, lon2) {
@@ -154,59 +231,6 @@ function CharityHome() {
     };
 
     return names[category] || "Other";
-  }
-
-  function formatPickup(from, until) {
-    if (!from && !until) return "—";
-    return `${from ? from.slice(0, 5) : "—"} – ${
-      until ? until.slice(0, 5) : "—"
-    }`;
-  }
-
-  function getPickupUntilDateTime(pickupUntil) {
-    if (!pickupUntil) return null;
-
-    const now = new Date();
-    const [hour, minute] = pickupUntil.slice(0, 5).split(":").map(Number);
-
-    const pickupDate = new Date();
-    pickupDate.setHours(hour, minute, 0, 0);
-
-    if (pickupDate <= now) {
-      pickupDate.setDate(pickupDate.getDate() + 1);
-    }
-
-    return pickupDate;
-  }
-
-  function getUrgencyFromPickupUntil(pickupUntil) {
-    const pickupDate = getPickupUntilDateTime(pickupUntil);
-    if (!pickupDate) return "low";
-
-    const now = new Date();
-    const hoursLeft = (pickupDate.getTime() - now.getTime()) / (1000 * 60 * 60);
-
-    if (hoursLeft <= 2) return "high";
-    if (hoursLeft <= 6) return "medium";
-    return "low";
-  }
-
-  function getTimeLeftText(pickupUntil) {
-    const pickupDate = getPickupUntilDateTime(pickupUntil);
-    if (!pickupDate) return "Available";
-
-    const now = new Date();
-    const minutesLeft = Math.floor(
-      (pickupDate.getTime() - now.getTime()) / (1000 * 60)
-    );
-
-    if (minutesLeft <= 0) return "Ending soon";
-
-    const hours = Math.floor(minutesLeft / 60);
-    const minutes = minutesLeft % 60;
-
-    if (hours === 0) return `${minutes} min left`;
-    return `${hours}h ${minutes}m left`;
   }
 
   function openClaimModal(listing) {
@@ -310,12 +334,14 @@ function CharityHome() {
 
     return matchSearch && matchFilter;
   });
-const nearbyOnly = filtered.filter(
-  (listing) =>
-    listing.distanceKm !== null &&
-    listing.distanceKm <= 10
-);
+
   const sortedFiltered = [...filtered].sort((a, b) => {
+    const order = { high: 1, medium: 2, low: 3, expired: 4 };
+
+    if (a.urgency !== b.urgency) {
+      return order[a.urgency] - order[b.urgency];
+    }
+
     if (a.distanceKm !== null && b.distanceKm !== null) {
       return a.distanceKm - b.distanceKm;
     }
@@ -323,8 +349,7 @@ const nearbyOnly = filtered.filter(
     if (a.distanceKm !== null) return -1;
     if (b.distanceKm !== null) return 1;
 
-    const order = { high: 1, medium: 2, low: 3 };
-    return order[a.urgency] - order[b.urgency];
+    return 0;
   });
 
   return (
@@ -419,7 +444,7 @@ const nearbyOnly = filtered.filter(
           {sortedFiltered.length !== 1 ? "s" : ""} available
         </span>
 
-        <span className="ch-sort-txt">Sorted by nearest distance ↓</span>
+        <span className="ch-sort-txt">Sorted by urgency and distance ↓</span>
       </div>
 
       {sortedFiltered.length === 0 ? (
@@ -490,7 +515,7 @@ const nearbyOnly = filtered.filter(
 }
 
 function ListingCard({ listing, onClaim }) {
-  const urgency = urgencyConfig[listing.urgency];
+  const urgency = urgencyConfig[listing.urgency] || urgencyConfig.low;
 
   return (
     <div className={`ch-card ${listing.urgency === "high" ? "urgent" : ""}`}>
@@ -528,7 +553,11 @@ function ListingCard({ listing, onClaim }) {
         <div className="ch-meta-sep" />
         <span>📍 {listing.distance}</span>
         <div className="ch-meta-sep" />
-        <span className={listing.urgency === "high" ? "ch-time-urgent" : ""}>
+        <span
+          className={
+            listing.urgency === "high" ? "ch-time-urgent" : ""
+          }
+        >
           ⏱ {listing.timeLeft}
         </span>
       </div>
