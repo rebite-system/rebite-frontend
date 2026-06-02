@@ -103,23 +103,12 @@ function FoodWasteMonitoring() {
     return `${h}h ${m}m left`;
   }
 
-  function formatPickupWindow(record) {
-    const from = formatTime(record.pickup_from);
-    const until = formatTime(record.pickup_until);
+function formatPickupWindow(record) {
+  const from = formatTime(record.pickup_from);
+  const until = formatTime(record.pickup_until);
 
-    let nextDay = "";
-
-    if (record.pickup_from && record.pickup_until) {
-      const [fromH, fromM] = record.pickup_from.slice(0, 5).split(":").map(Number);
-      const [untilH, untilM] = record.pickup_until.slice(0, 5).split(":").map(Number);
-
-      if (untilH * 60 + untilM < fromH * 60 + fromM) {
-        nextDay = " nextday";
-      }
-    }
-
-    return `${from} → ${until}${nextDay}`;
-  }
+  return `${from} → ${until}`;
+}
 
   function getCurrentPriority(record) {
     if (isExpired(record)) return "Expired";
