@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../api/axios";
+import emailjs from "@emailjs/browser";
 import "./SignIn.css";
 
 function SignIn() {
@@ -24,6 +25,7 @@ function SignIn() {
     const [newPassword, setNewPassword] = useState("");
 
     const [resetMessage, setResetMessage] = useState("");
+    const [generatedCode, setGeneratedCode] = useState("");
 
     function handleChange(e) {
         setForm({
@@ -110,102 +112,95 @@ function SignIn() {
         setShowForgotModal(true);
     }
 
-    async function sendResetCode(e) {
-        e.preventDefault();
+  async function sendResetCode(e) {
+    e.preventDefault();
 
-        if (!forgotEmail.trim()) {
-            setResetMessage("Please enter your email address.");
-            return;
-        }
-
-        if (!/\S+@\S+\.\S+/.test(forgotEmail)) {
-            setResetMessage("Please enter a valid email address.");
-            return;
-        }
-
-        try {
-            const res = await api.post("/forgot-password", {
-                email: forgotEmail,
-            });
-
-            setResetMessage(
-          "A verification code has been sent to your email."
-         );
-
-            setResetMessage("");
-            setResetStep("code");
-        } catch (err) {
-            setResetMessage(
-                err.response?.data?.message || "Email not found."
-            );
-        }
+    if (!forgotEmail.trim()) {
+        setResetMessage("Please enter your email address.");
+        return;
     }
 
-    async function verifyCode(e) {
-        e.preventDefault();
+    const code = Math.floor(
+        100000 + Math.random() * 900000
+    ).toString();
 
-        if (!enteredCode.trim()) {
-            setResetMessage("Please enter the reset code.");
-            return;
-        }
-
-        try {
-            await api.post("/verify-reset-code", {
+    try {
+        await emailjs.send(
+            "service_74ahuqx",
+            "template_o3p29d9",
+            {
                 email: forgotEmail,
-                code: enteredCode,
-            });
+                code: code,
+            },
+            "vBWiMdWpnUx2mSFrg"
+        );
 
-            setResetMessage("");
-            setResetStep("newPassword");
-        } catch (err) {
-            setResetMessage(
-                err.response?.data?.message ||
-                "Invalid or expired code."
-            );
-        }
+        setGeneratedCode(code);
+
+        setResetMessage("");
+        setResetStep("code");
+    } catch (error) {
+        setResetMessage("Failed to send reset code email.");
+    }
+}
+
+   async function verifyCode(e) {
+    e.preventDefault();
+
+    if (!enteredCode.trim()) {
+        setResetMessage("Please enter the reset code.");
+        return;
     }
 
-    async function resetPassword(e) {
-        e.preventDefault();
-
-        if (!newPassword.trim()) {
-            setResetMessage("Please enter a new password.");
-            return;
-        }
-
-        if (
-            newPassword.length < 8 ||
-            !/[A-Z]/.test(newPassword) ||
-            !/[a-z]/.test(newPassword) ||
-            !/[0-9]/.test(newPassword) ||
-            !/[@$!%*#?&]/.test(newPassword)
-        ) {
-            setResetMessage(
-                "Password must contain uppercase, lowercase, number, and special character."
-            );
-            return;
-        }
-
-        try {
-            await api.post("/reset-password", {
-                email: forgotEmail,
-                code: enteredCode,
-                password: newPassword,
-                password_confirmation: newPassword,
-            });
-
-            setResetMessage(
-                "Password reset successfully. Please sign in again."
-            );
-
-            setResetStep("done");
-        } catch (err) {
-            setResetMessage(
-                err.response?.data?.message ||
-                "Password reset failed."
-            );
-        }
+    if (enteredCode !== generatedCode) {
+        setResetMessage("Invalid verification code.");
+        return;
     }
+
+    setResetMessage("");
+    setResetStep("newPassword");
+}
+
+   async function resetPassword(e) {
+    e.preventDefault();
+
+    if (!newPassword.trim()) {
+        setResetMessage("Please enter a new password.");
+        return;
+    }
+
+    if (
+        newPassword.length < 8 ||
+        !/[A-Z]/.test(newPassword) ||
+        !/[a-z]/.test(newPassword) ||
+        !/[0-9]/.test(newPassword) ||
+        !/[@$!%*#?&]/.test(newPassword)
+    ) {
+        setResetMessage(
+            "Password must contain uppercase, lowercase, number, and special character."
+        );
+        return;
+    }
+
+    try {
+        await api.post("/reset-password", {
+            email: forgotEmail,
+            password: newPassword,
+            password_confirmation: newPassword,
+        });
+
+        setResetMessage(
+            "Password reset successfully. Please sign in again."
+        );
+
+        setResetStep("done");
+    } catch (err) {
+        setResetMessage(
+            err.response?.data?.message ||
+            "Password reset failed."
+        );
+    }
+}
 
     return (
         <div className="signin">

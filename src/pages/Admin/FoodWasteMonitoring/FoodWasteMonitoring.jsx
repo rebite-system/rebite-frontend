@@ -322,11 +322,6 @@ function getPickupDeadline(record) {
                 </span>
               </div>
 
-              <span className="fw-detail-label">Pickup Deadline</span>
-<span className="fw-detail-val">
-  {formatTime(selectedWaste.pickup_until)}
-</span>
-
               <div className="fw-detail-item">
                 <span className="fw-detail-label">Pickup Time</span>
                 <span className="fw-detail-val">
