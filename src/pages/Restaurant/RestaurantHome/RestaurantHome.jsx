@@ -39,19 +39,7 @@ function RestaurantHome() {
       const foods = res.data.data?.data || res.data.data || [];
 
       const sortedFoods = [...foods].sort((a, b) => {
-  const getRank = (item) => {
-    if (item.status === "expired") return 5;
-    if (item.status === "collected") return 4;
-    if (item.status === "reserved") return 3;
-
-    if (item.ai_priority_level === "High") return 0;
-    if (item.ai_priority_level === "Medium") return 1;
-    if (item.ai_priority_level === "Low") return 2;
-
-    return 6;
-  };
-
-  return getRank(a) - getRank(b);
+  return getPriorityRank(a) - getPriorityRank(b);
 });
 
 setListings(sortedFoods);
@@ -90,6 +78,61 @@ setListings(sortedFoods);
 
     return names[category] || "No category";
   }
+  function getPickupDeadline(item) {
+  if (!item.pickup_until) return null;
+
+  const baseDate = item.created_at ? new Date(item.created_at) : new Date();
+
+  const [untilH, untilM] = item.pickup_until
+    .slice(0, 5)
+    .split(":")
+    .map(Number);
+
+  const deadline = new Date(baseDate);
+  deadline.setHours(untilH, untilM, 0, 0);
+
+  if (item.pickup_from) {
+    const [fromH, fromM] = item.pickup_from
+      .slice(0, 5)
+      .split(":")
+      .map(Number);
+
+    const start = new Date(baseDate);
+    start.setHours(fromH, fromM, 0, 0);
+
+    if (deadline < start) {
+      deadline.setDate(deadline.getDate() + 1);
+    }
+  }
+
+  return deadline;
+}
+
+function getHoursLeft(item) {
+  const deadline = getPickupDeadline(item);
+  if (!deadline) return null;
+
+  return (
+    (deadline.getTime() - new Date().getTime()) /
+    (1000 * 60 * 60)
+  );
+}
+
+function getPriorityRank(item) {
+  if (item.status === "expired") return 99;
+  if (item.status === "collected") return 98;
+  if (item.status === "reserved") return 97;
+
+  const hoursLeft = getHoursLeft(item);
+
+  if (hoursLeft === null) return 96;
+
+  if (hoursLeft <= 0) return 99;
+  if (hoursLeft <= 3) return 1;      // High
+  if (hoursLeft <= 10) return 2;     // Medium
+
+  return 3;                          // Low
+}
 
   const filteredListings =
     activeTab === "all"
