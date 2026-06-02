@@ -30,6 +30,21 @@ function RestaurantHome() {
     fetchFoods();
     fetchClaims();
   }, []);
+  useEffect(() => {
+  const hasPendingAI = listings.some(
+    (item) =>
+      getDisplayStatus(item) === "active" &&
+      !item.ai_priority_level
+  );
+
+  if (!hasPendingAI) return;
+
+  const interval = setInterval(() => {
+    fetchFoods();
+  }, 5000);
+
+  return () => clearInterval(interval);
+}, [listings]);
 
   async function fetchFoods() {
     try {
